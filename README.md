@@ -1,0 +1,2 @@
+# lottery
+Example lottery service
