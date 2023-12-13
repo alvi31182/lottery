@@ -9,7 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 
 /**
- * @template-extends  EntityRepository<LotteryRepository>
+ * @template-extends  EntityRepository<Lottery>
  */
 final class LotteryRepository extends EntityRepository
 {

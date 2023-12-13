@@ -28,28 +28,4 @@ class Lottery
     ) {
         $this->createdAt = new DateTimeImmutable('now');
     }
-    public function getId(): LotteryId
-    {
-        return $this->id;
-    }
-    public function getPlayerId(): UuidInterface
-    {
-        return $this->playerId;
-    }
-    public function getStatus(): string
-    {
-        return $this->status;
-    }
-    public function getCreatedAt(): DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-    public function getUpdatedAt(): ?DateTimeImmutable
-    {
-        return $this->updatedAt;
-    }
-    public function getDeletedAt(): ?DateTimeImmutable
-    {
-        return $this->deletedAt;
-    }
 }
