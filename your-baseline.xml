@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="5.17.0@c620f6e80d0abfca532b00bda366062aaedf6e5d">
+  <file src="src/Kernel.php">
+    <PossiblyUnusedMethod>
+      <code>configureRoutes</code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Lottery/Application/Services/LotteryService.php">
+    <UnusedClass>
+      <code>LotteryService</code>
+    </UnusedClass>
+  </file>
+  <file src="src/Lottery/Infrastructure/Persistence/LotteryRepository.php">
+    <UnusedClass>
+      <code>LotteryRepository</code>
+    </UnusedClass>
+  </file>
+  <file src="src/Lottery/Model/Lottery.php">
+    <UnusedClass>
+      <code>Lottery</code>
+    </UnusedClass>
+  </file>
+  <file src="src/Lottery/Presentation/Api/v1/DeleteLottery.php">
+    <UnusedClass>
+      <code>DeleteLottery</code>
+    </UnusedClass>
+  </file>
+  <file src="src/Lottery/Presentation/Api/v1/EditLottery.php">
+    <UnusedClass>
+      <code>EditLottery</code>
+    </UnusedClass>
+  </file>
+  <file src="src/Lottery/Presentation/Api/v1/GetLottery.php">
+    <UnusedClass>
+      <code>GetLottery</code>
+    </UnusedClass>
+  </file>
+</files>
