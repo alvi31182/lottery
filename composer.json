@@ -21,7 +21,9 @@
         "symfony/config": "^7.0"
     },
     "require-dev": {
-        "squizlabs/php_codesniffer": "3.*"
+        "squizlabs/php_codesniffer": "3.*",
+        "symfony/polyfill": "^1.28",
+        "vimeo/psalm": "^5.17"
     },
     "config": {
         "allow-plugins": {
@@ -38,6 +40,15 @@
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
             "assets:install %PUBLIC_DIR%": "symfony-cmd"
+        }
+    },
+    "conflict": {
+        "symfony/symfony": "*"
+    },
+    "extra": {
+        "symfony": {
+            "allow-contrib": false,
+            "require": "^7.0.0"
         }
     }
 }
