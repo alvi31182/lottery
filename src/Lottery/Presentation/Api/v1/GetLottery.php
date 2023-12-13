@@ -9,6 +9,6 @@ final class GetLottery extends AbstractController
 {
     public function __invoke(): JsonResponse
     {
-
+        return new JsonResponse();
     }
 }
