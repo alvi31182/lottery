@@ -11,7 +11,7 @@ use Ramsey\Uuid\UuidInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 #[Embeddable]
-class LotteryId
+class LotteryAwardId
 {
     public function __construct(
         #[ORM\Id]

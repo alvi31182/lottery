@@ -2,15 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Repository\Doctrine;
+namespace App\Lottery\Persistence\Doctrine;
 
 use App\Lottery\Model\Lottery;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 
-/**
- * @template-extends  EntityRepository<Lottery>
- */
 final class LotteryRepository extends EntityRepository
 {
     public function __construct(EntityManagerInterface $em)
