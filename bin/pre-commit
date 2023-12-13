@@ -1,0 +1,19 @@
+#!/bin/bash
+
+cd /var/www/lottery
+
+./vendor/bin/psalm
+
+if [ $? -ne 0 ]; then
+    echo "Проверка Psalm не пройдена. Коммит отклонен."
+    exit 1
+fi
+
+./vendor/bin/phpcs
+
+if [ $? -ne 0 ]; then
+    echo "Проверка CodeSniffer не пройдена. Коммит отклонен."
+    exit 1
+fi
+
+exit 0
