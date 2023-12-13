@@ -6,5 +6,4 @@ namespace App\Lottery\Application\Services;
 
 final class LotteryService
 {
-
 }

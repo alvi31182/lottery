@@ -6,5 +6,4 @@ namespace App\Lottery\Infrastructure\Persistence;
 
 class LotteryRepository
 {
-
 }

@@ -6,5 +6,4 @@ namespace App\Lottery\Presentation\Api\v1;
 
 class DeleteLottery
 {
-
 }
