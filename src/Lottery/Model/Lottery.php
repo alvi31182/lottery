@@ -21,7 +21,7 @@ class Lottery
 {
     public function __construct(
         #[ORM\Embedded(class: LotteryId::class, columnPrefix: false)]
-        private LotteryId $id,
+        private UuidInterface $id,
         #[ORM\Column(type: 'uuid', nullable: false)]
         private UuidInterface $playerId,
         #[ORM\Column(type: 'uuid', nullable: false)]
@@ -35,7 +35,18 @@ class Lottery
         #[ORM\Column(type: 'datetimetz_immutable', nullable: true)]
         private ?DateTimeImmutable $deletedAt,
     ) {
-        $this->createdAt = new DateTimeImmutable('now');
-        $this->status = LotteryStatus::STARTED;
+    }
+
+    public function createStartLottery(): self
+    {
+        return new self(
+            id: LotteryId::generateUuidV7(),
+            playerId: LotteryId::generateUuidV7(),
+            gameId: LotteryId::generateUuidV7(),
+            status: LotteryStatus::IN_WAITING,
+            createdAt: new DateTimeImmutable('now'),
+            updatedAt: null,
+            deletedAt: null
+        );
     }
 }

@@ -6,5 +6,5 @@ namespace App\Lottery\Model;
 
 interface ReadLotteryStorage
 {
-    public function getByPlayerWithGameId(string $playerId): bool;
+    public function findByPlayerWithGameId(string $playerId, string $gameId): ?Lottery;
 }
