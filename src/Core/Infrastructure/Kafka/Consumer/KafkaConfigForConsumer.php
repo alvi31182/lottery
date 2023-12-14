@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Core\Infrastruture\Kafka\Consumer;
+namespace App\Core\Infrastructure\Kafka\Consumer;
 
-use App\Core\Infrastruture\Kafka\Settings\Handler\KafkaErrorHandler;
-use App\Core\Infrastruture\Kafka\Settings\Handler\KafkaRebalanceHanlder;
+use App\Core\Infrastructure\Kafka\Settings\Handler\KafkaErrorHandler;
+use App\Core\Infrastructure\Kafka\Settings\Handler\KafkaRebalanceHanlder;
 use Psr\Log\LoggerInterface;
 use RdKafka\Conf;
 
@@ -30,10 +30,12 @@ final readonly class KafkaConfigForConsumer
         $conf = new Conf();
         $conf->set("metadata.broker.list", $this->dns);
         $conf->set('group.id', $this->kafkaTopicPrefix . $this->consumerGroup);
-        $conf->set('enable.auto.commit', 'false');
-        $conf->set('enable.auto.offset.store', 'false');
-        $conf->set('auto.commit.interval.ms', '1000');
-        $conf->set('session.timeout.ms', '36000');
+//        $conf->set('enable.auto.commit', 'false');
+//        $conf->set('enable.auto.offset.store', 'false');
+//        $conf->set('auto.commit.interval.ms', '1000');
+//        $conf->set('session.timeout.ms', '36000');
+        $conf->set('enable.partition.eof', 'true');
+        $conf->set('auto.offset.reset', 'earliest');
 
         $errorHandler = new KafkaErrorHandler($this->logger);
         $conf->setErrorCb([$errorHandler, 'handleError']);

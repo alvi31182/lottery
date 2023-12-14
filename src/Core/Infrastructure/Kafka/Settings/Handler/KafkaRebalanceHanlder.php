@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Core\Infrastruture\Kafka\Settings\Handler;
+namespace App\Core\Infrastructure\Kafka\Settings\Handler;
 
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -24,7 +24,7 @@ final readonly class KafkaRebalanceHanlder
     public function handleRebalanceCb(
         KafkaConsumer $kafka,
         string $err,
-        string $reason,
+        mixed $reason,
         ?array $partitions = null
     ): void {
         if ($partitions !== null) {

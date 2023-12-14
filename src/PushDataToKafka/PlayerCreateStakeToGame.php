@@ -14,7 +14,8 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route(path: '/stake', methods: ['POST'])]
 final class PlayerCreateStakeToGame extends AbstractController
 {
-    private const TOPIC_NAME = 'player.v1.stake';
+    private const TOPIC_NAME = 'player.v1.staked';
+    private const TOPIC_PREFIX = 'lottery_';
 
     public function __construct()
     {
@@ -52,7 +53,7 @@ final class PlayerCreateStakeToGame extends AbstractController
 
         $payload = json_encode($data, JSON_THROW_ON_ERROR | JSON_FORCE_OBJECT);
 
-        $topic = $rk->newTopic(self::TOPIC_NAME);
+        $topic = $rk->newTopic(self::TOPIC_PREFIX . self::TOPIC_NAME);
         $topic->producev(
             partition: RD_KAFKA_PARTITION_UA,
             msgflags: 0,

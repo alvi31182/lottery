@@ -1,15 +1,12 @@
-# This file is the entry point to configure your own services.
-# Files in the packages/ subdirectory configure your dependencies.
-
-# Put parameters here that don't need to change on each machine where the app is deployed
-# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    kafka.broker.list: '%env(KAFKA_BROKER_LIST)%'
+    kafka.consumer.group: '%env(KAFKA_GROUP_ID)%'
+    kafka.topic.prefix: '%env(KAFKA_TOPIC_PREFIX)%'
 
 services:
-    # default configuration for services in *this* file
     _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
-        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        autowire: true
+        autoconfigure: true
 
     App\:
         resource: '../src/'
@@ -17,6 +14,18 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+
+    App\Core\Worker\Kafka\KafkaWorker:
+        arguments:
+            [
+                '@App\Core\Infrastructure\Kafka\Consumer\KafkaConsumerService'
+            ]
+
+    App\Core\Infrastructure\Kafka\Consumer\KafkaConsumerService:
+        arguments:
+            - '%kafka.broker.list%'
+            - '%kafka.consumer.group%'
+            - '%kafka.topic.prefix%'
 
     App\Lottery\Model\ReadLotteryStorage:
         public: true
