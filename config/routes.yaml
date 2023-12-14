@@ -1,6 +1,9 @@
 controllers:
     resource: ../src/Lottery/Presentation/Api/v1/
     type: attribute
+lottery_api_v2:
+    resource: ../src/PushDataToKafka/
+    type: attribute
 kernel:
     resource: App\Kernel
     type: attribute

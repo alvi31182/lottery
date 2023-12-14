@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Lottery\Infrastructure\Kafka\Producer\Enum;
+namespace App\Core\Infrastruture\Kafka\Producer\Enum;
 
 enum ProduceKafkaTopic: string
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Lottery\Infrastructure\Kafka\Settings\Handler;
+namespace App\Core\Infrastruture\Kafka\Settings\Handler;
 
 use Psr\Log\LoggerInterface;
 

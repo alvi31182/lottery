@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files psalm-version="5.17.0@c620f6e80d0abfca532b00bda366062aaedf6e5d">
-  <file src="src/Lottery/Infrastructure/Kafka/Settings/Handler/KafkaErrorHandler.php">
-    <PossiblyNullArgument>
-      <code>rd_kafka_err2str($error)</code>
-    </PossiblyNullArgument>
-  </file>
-  <file src="src/Lottery/Persistence/Doctrine/LotteryRepository.php">
-    <MissingTemplateParam>
-      <code>LotteryRepository</code>
-    </MissingTemplateParam>
+  <file src="src/Core/Infrastruture/Kafka/Consumer/AbstractKafkaConsumer.php">
+    <UndefinedConstant>
+      <code>ConsumeTopic::PLAYER_DEPOSIT</code>
+      <code>ConsumeTopic::PLAYER_WITHDRAWAL</code>
+    </UndefinedConstant>
   </file>
 </files>

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Lottery\Infrastructure\Kafka\Consumer;
+namespace App\Core\Infrastruture\Kafka\Consumer;
 
-use App\Lottery\Infrastructure\Kafka\Consumer\Enum\ConsumeTopic;
+use App\Core\Infrastruture\Kafka\Consumer\Enum\ConsumeTopic;
 use Psr\Log\LoggerInterface;
 use RdKafka\Exception;
 use RdKafka\KafkaConsumer;

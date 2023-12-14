@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Lottery\Infrastructure\Kafka\Consumer;
+namespace App\Core\Infrastruture\Kafka\Consumer;
 
-use App\Lottery\Infrastructure\Kafka\Settings\Handler\KafkaErrorHandler;
-use App\Lottery\Infrastructure\Kafka\Settings\Handler\KafkaRebalanceHanlder;
+use App\Core\Infrastruture\Kafka\Settings\Handler\KafkaErrorHandler;
+use App\Core\Infrastruture\Kafka\Settings\Handler\KafkaRebalanceHanlder;
 use Psr\Log\LoggerInterface;
 use RdKafka\Conf;
 

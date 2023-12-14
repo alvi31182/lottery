@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Lottery\Infrastructure\Kafka\Consumer;
+namespace App\Core\Infrastruture\Kafka\Consumer;
 
 use RdKafka\Exception;
 use RdKafka\KafkaConsumer;
