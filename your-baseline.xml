@@ -5,12 +5,6 @@
       <code>rd_kafka_err2str($error)</code>
     </PossiblyNullArgument>
   </file>
-  <file src="src/Lottery/Infrastructure/Persistence/LotteryRepository.php">
-    <ImplementedReturnTypeMismatch>
-      <code>Lottery|null</code>
-      <code>Lottery|null</code>
-    </ImplementedReturnTypeMismatch>
-  </file>
   <file src="src/Lottery/Persistence/Doctrine/LotteryRepository.php">
     <MissingTemplateParam>
       <code>LotteryRepository</code>

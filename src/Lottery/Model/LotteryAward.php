@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace App\Lottery\Model;
 
-use App\Lottery\Infrastructure\Persistence\LotteryAwardRepository;
 use App\Lottery\Model\Enum\AwardStatus;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\Index;
 use Ramsey\Uuid\UuidInterface;
 
 class LotteryAward

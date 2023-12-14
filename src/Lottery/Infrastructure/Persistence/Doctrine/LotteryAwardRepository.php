@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Lottery\Infrastructure\Persistence;
+namespace App\Lottery\Infrastructure\Persistence\Doctrine;
 
 use App\Lottery\Model\LotteryAward;
 use Doctrine\ORM\EntityManagerInterface;
