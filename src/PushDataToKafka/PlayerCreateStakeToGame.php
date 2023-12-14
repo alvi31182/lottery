@@ -23,7 +23,7 @@ final class PlayerCreateStakeToGame extends AbstractController
     /**
      * @psalm-suppress UndefinedClass
      * @psalm-suppress UndefinedConstant
-     * 
+     *
      * @return JsonResponse
      * @throws \JsonException
      * @throws \RdKafka\Exception
