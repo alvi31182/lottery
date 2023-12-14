@@ -18,9 +18,9 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-#    App\Lottery\Application\Resolver\StartLotteryRequestValueResolver:
-#        tags:
-#            - {'controller.argument_value_resolver'}
+    App\Lottery\Model\ReadLotteryStorage:
+        public: true
+        class: App\Lottery\Persistence\Doctrine\LotteryRepository
 
     App\Core\Exception\RequestExceptionListener:
         tags:

@@ -15,6 +15,7 @@ use Throwable;
 abstract class AbstractKafkaConsumer
 {
     protected KafkaConfigForConsumer $kafkaConfigForConsumer;
+
     public function __construct(
         protected string $dns,
         protected string $consumerGroup,
@@ -47,7 +48,7 @@ abstract class AbstractKafkaConsumer
     }
 
     /**
-* @psalm-suppress UndefinedClass
+     * @psalm-suppress UndefinedClass
      */
     protected function commitMessage(Message $message, KafkaConsumer $consumer): Message
     {

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Lottery\Presentation\Api\v1;
 
 use App\Lottery\Application\Dto\Request\StartLotteryRequest;
+use App\Lottery\Application\UseCase\LotteryCreateHandler;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
@@ -14,9 +15,10 @@ use Symfony\Component\Routing\Attribute\Route;
 final class StartLottery extends AbstractController
 {
     public function __invoke(
-        #[MapRequestPayload] StartLotteryRequest $lottery
+        #[MapRequestPayload] StartLotteryRequest $lottery,
+        LotteryCreateHandler $handler
     ): JsonResponse {
-        dd($lottery);
+        $handler->handler(request: $lottery);
         return new JsonResponse();
     }
 }

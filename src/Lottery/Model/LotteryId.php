@@ -9,6 +9,7 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Doctrine\ORM\Mapping as ORM;
+use InvalidArgumentException;
 
 #[Embeddable]
 class LotteryId
@@ -18,11 +19,16 @@ class LotteryId
         #[ORM\Column(type: 'uuid', unique:true, nullable: false)]
         #[ORM\GeneratedValue(strategy:'CUSTOM')]
         #[ORM\CustomIdGenerator(class:UuidGenerator::class)]
-        private UuidInterface $id
+        private string $id
     ) {
+        $uuid = Uuid::fromString($id);
+
+        if (!Uuid::isValid($this->id)) {
+            throw new InvalidArgumentException('Invalid UUIDv7.');
+        }
     }
 
-    public function getId(): UuidInterface
+    public function getId(): string
     {
         return $this->id;
     }
@@ -34,6 +40,6 @@ class LotteryId
 
     public function equals(self $other): bool
     {
-        return $this->id->equals($other->getId());
+        return Uuid::fromString($this->getId())->equals(Uuid::fromString($other->getId()));
     }
 }

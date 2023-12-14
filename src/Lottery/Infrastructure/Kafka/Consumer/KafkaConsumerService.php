@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Lottery\Infrastructure\Kafka\Consumer;
 
+use RdKafka\Exception;
 use RdKafka\KafkaConsumer;
 
 final class KafkaConsumerService extends AbstractKafkaConsumer
@@ -19,6 +20,7 @@ final class KafkaConsumerService extends AbstractKafkaConsumer
 
     /**
      * @psalm-suppress UndefinedClass
+     * @throws Exception
      */
     public function consumeFromKafka(): KafkaConsumer
     {
