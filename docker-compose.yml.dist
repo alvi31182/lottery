@@ -1,3 +1,97 @@
 version: '3.3'
 
 services:
+  php:
+    container_name: lottery_php
+    build:
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+    volumes:
+      - .:/var/www/lottery:delegated
+    ports:
+      - "9000:9000"
+    networks:
+      - lottery
+      - bridge
+
+  naginx:
+    container_name: lottery_nginx
+    build:
+      context: .
+      dockerfile: ./docker/nginx/Dockerfile
+    ports:
+      - "81:80"
+      - "443:443"
+    depends_on:
+      - php
+    networks:
+      - lottery
+      - bridge
+    volumes:
+      - ./public:/var/www/lottery/public
+      - ./var/log/nginx:/var/log/nginx
+
+  db:
+    image: postgres:latest
+    container_name: lottery_db
+    env_file:
+      - .env.local
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./var/postgres/data:/var/lib/postgresql/data:rw
+    networks:
+      - lottery
+      - bridge
+
+  kafka_lottery:
+    image: confluentinc/cp-kafka:latest
+    hostname: lottery_kafka
+    container_name: lottery_kafka
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_NODE_ID: 1
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:29093
+      KAFKA_LISTENERS: PLAINTEXT://kafka:9092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://0.0.0.0:29092
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
+      CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
+    networks:
+      - lottery
+      - bridge
+
+  kafka_lottery_ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: lottery-kafka-ui
+    ports:
+      - "8082:8082"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: lottery
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka_lottery:9092
+      KAFKA_CLUSTERS_0_READONLY: "false"
+    depends_on:
+      - kafka_lottery
+    networks:
+      - lottery
+      - bridge
+
+
+networks:
+  bridge:
+    external:
+      name: internal_bridge
+  lottery:
+    driver: "bridge"
+    driver_opts:
+      com.docker.network.driver.mtu: 1400
