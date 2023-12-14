@@ -7,7 +7,6 @@ namespace App\Lottery\Persistence\Doctrine;
 use App\Lottery\Model\Lottery;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
-use Ramsey\Uuid\UuidInterface;
 
 /**
  * @psalm-suppress MissingTemplateParam
