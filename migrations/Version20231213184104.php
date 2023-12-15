@@ -29,7 +29,7 @@ final class Version20231213184104 extends AbstractMigration
                             deleted_at TIMESTAMP(0) WITH TIME ZONE DEFAULT NULL, 
                             PRIMARY KEY(id))'
         );
-        $this->addSql('CREATE INDEX btree_lottery_idx ON lottery (id)');
+        $this->addSql('CREATE INDEX idx_lottery_player_game ON lottery (player_id, game_id)');
         $this->addSql('COMMENT ON COLUMN lottery.id IS \'(DC2Type:uuid)\'');
         $this->addSql('COMMENT ON COLUMN lottery.player_id IS \'(DC2Type:uuid)\'');
         $this->addSql('COMMENT ON COLUMN lottery.game_id IS \'(DC2Type:uuid)\'');
