@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Lottery\Model;
 
+use App\Lottery\Application\Command\CreateLotteryCommand;
 use App\Lottery\Model\Enum\LotteryStatus;
 use App\Lottery\Persistence\Doctrine\LotteryRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -40,14 +41,14 @@ class Lottery
     ) {
     }
 
-    public static function createStartLottery(string $playerId, string $gameId): self
+    public static function createStartLottery(CreateLotteryCommand $command): self
     {
         return new self(
             id: LotteryId::generateUuidV7(),
-            playerId: Uuid::fromString($playerId),
-            gameId: Uuid::fromString($gameId),
+            playerId: Uuid::fromString($command->playerId),
+            gameId: Uuid::fromString($command->gameId),
             status: LotteryStatus::IN_WAITING,
-            stake: '12222',
+            stake: $command->stake,
             createdAt: new DateTimeImmutable('now'),
             updatedAt: null,
             deletedAt: null

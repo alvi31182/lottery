@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Lottery\Application\UseCase;
 
+use App\Lottery\Application\Command\CreateLotteryCommand;
 use App\Lottery\Model\Lottery;
 use App\Lottery\Model\WriteLotteryStorage;
 use Psr\Log\LoggerInterface;
@@ -22,7 +23,13 @@ final readonly class LotteryCreateHandler
         $messageData = json_decode($message, true, JSON_THROW_ON_ERROR);
 
         try {
-            $lottery = Lottery::createStartLottery($messageData['game']['playerId'], $messageData['game']['gameId']);
+            $lottery = Lottery::createStartLottery(
+                new CreateLotteryCommand(
+                    playerId: $messageData['game']['playerId'],
+                    gameId: $messageData['game']['gameId'],
+                    stake: $messageData['game']['stake']
+                )
+            );
 
             $this->writeLotteryStorage->createLottery($lottery);
         } catch (Throwable $exception) {
