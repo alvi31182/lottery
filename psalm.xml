@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <psalm
-    errorLevel="2"
+    errorLevel="5"
     resolveFromConfigFile="true"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="https://getpsalm.org/schema/config"
@@ -9,10 +9,21 @@
     findUnusedCode="false"
     errorBaseline="your-baseline.xml"
 >
+    <issueHandlers>
+        <MissingPropertyType errorLevel="suppress" />
+        <UndefinedClass errorLevel="info">
+            <errorLevel type="suppress">
+                <referencedClass name="RdKafka\Message" />
+                <referencedClass name="RdKafka\Exception" />
+            </errorLevel>
+        </UndefinedClass>
+    </issueHandlers>
+
     <projectFiles>
         <directory name="src" />
         <ignoreFiles>
-            <directory name="vendor" />
+            <directory name="vendor"/>
+            <directory name="tests"/>
         </ignoreFiles>
     </projectFiles>
 </psalm>

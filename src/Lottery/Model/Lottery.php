@@ -9,6 +9,7 @@ use App\Lottery\Persistence\Doctrine\LotteryRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
+use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 #[ORM\Entity(repositoryClass: LotteryRepository::class)]
@@ -35,7 +36,46 @@ class Lottery
         #[ORM\Column(type: 'datetimetz_immutable', nullable: true)]
         private ?DateTimeImmutable $deletedAt,
     ) {
-        $this->createdAt = new DateTimeImmutable('now');
-        $this->status = LotteryStatus::STARTED;
+    }
+
+    public static function createStartLottery(string $playerId, string $gameId): self
+    {
+        return new self(
+            id: LotteryId::generateUuidV7(),
+            playerId: Uuid::fromString($playerId),
+            gameId: Uuid::fromString($gameId),
+            status: LotteryStatus::IN_WAITING,
+            createdAt: new DateTimeImmutable('now'),
+            updatedAt: null,
+            deletedAt: null
+        );
+    }
+    public function getId(): LotteryId
+    {
+        return $this->id;
+    }
+    public function getPlayerId(): UuidInterface
+    {
+        return $this->playerId;
+    }
+    public function getGameId(): UuidInterface
+    {
+        return $this->gameId;
+    }
+    public function getStatus(): LotteryStatus
+    {
+        return $this->status;
+    }
+    public function getCreatedAt(): DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+    public function getUpdatedAt(): ?DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+    public function getDeletedAt(): ?DateTimeImmutable
+    {
+        return $this->deletedAt;
     }
 }

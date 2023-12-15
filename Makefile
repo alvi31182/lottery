@@ -12,3 +12,6 @@ up:
 
 php:
 	docker exec -it lottery_php bash
+
+ip-kafka:
+	docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' lottery_kafka

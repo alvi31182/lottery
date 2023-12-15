@@ -2,52 +2,45 @@
 
 declare(strict_types=1);
 
-namespace App\Lottery\Infrastructure\Kafka\Consumer;
+namespace App\Core\Infrastructure\Kafka\Consumer;
 
-use App\Lottery\Infrastructure\Kafka\Consumer\Enum\ConsumeTopic;
 use Psr\Log\LoggerInterface;
+use RdKafka\Conf;
 use RdKafka\Exception;
 use RdKafka\KafkaConsumer;
 use RdKafka\Message;
 use RdKafka\TopicPartition;
 use Throwable;
 
-abstract class AbstractKafkaConsumer
+abstract class AbstractKafkaConsumer implements KafkaMessageConsumer
 {
-    protected KafkaConfigForConsumer $kafkaConfigForConsumer;
     public function __construct(
         protected string $dns,
         protected string $consumerGroup,
         protected string $kafkaTopicPrefix,
         protected LoggerInterface $logger
     ) {
-        $this->kafkaConfigForConsumer = new KafkaConfigForConsumer(
-            dns: $this->dns,
-            consumerGroup: $this->consumerGroup,
-            kafkaTopicPrefix: $this->kafkaTopicPrefix,
-            logger: $this->logger
-        );
     }
 
     /**
      * @psalm-suppress UndefinedClass
      */
-    abstract protected function createConsumer(): KafkaConsumer;
+    abstract protected function buildConsumerConfig(): Conf;
+
+
+    /**
+     * @psalm-suppress  UndefinedClass
+     */
+    abstract protected function kafkaConsumer(): KafkaConsumer;
 
     /**
      * @psalm-suppress UndefinedClass
      * @throws Exception
      */
-    protected function subscribeToTopics(KafkaConsumer $consumer): void
-    {
-        $consumer->subscribe([
-            $this->kafkaTopicPrefix . ConsumeTopic::PLAYER_DEPOSIT->value,
-            $this->kafkaTopicPrefix . ConsumeTopic::PLAYER_WITHDRAWAL->value
-        ]);
-    }
+    abstract protected function subscribeToTopics(): array;
 
     /**
-* @psalm-suppress UndefinedClass
+     * @psalm-suppress UndefinedClass
      */
     protected function commitMessage(Message $message, KafkaConsumer $consumer): Message
     {
