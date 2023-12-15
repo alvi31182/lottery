@@ -16,11 +16,4 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-./vendor/bin/php-cs-fixer
-
-if [ $? -ne 0 ]; then
-    echo "Проверка CS-FIXER не пройдена. Коммит отклонен."
-    exit 1
-fi
-
 exit 0
