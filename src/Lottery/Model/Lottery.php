@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Lottery\Model;
 
 use App\Lottery\Application\Command\CreateLotteryCommand;
+use App\Lottery\Infrastructure\Persistence\Doctrine\LotteryRepository;
 use App\Lottery\Model\Enum\LotteryStatus;
-use App\Lottery\Persistence\Doctrine\LotteryRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
 use Ramsey\Uuid\Uuid;
