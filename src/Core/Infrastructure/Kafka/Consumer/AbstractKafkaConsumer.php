@@ -27,7 +27,6 @@ abstract class AbstractKafkaConsumer implements KafkaMessageConsumer
      */
     abstract protected function buildConsumerConfig(): Conf;
 
-
     /**
      * @psalm-suppress  UndefinedClass
      */
@@ -35,6 +34,7 @@ abstract class AbstractKafkaConsumer implements KafkaMessageConsumer
 
     /**
      * @psalm-suppress UndefinedClass
+     *
      * @throws Exception
      */
     abstract protected function subscribeToTopics(): array;
@@ -45,7 +45,7 @@ abstract class AbstractKafkaConsumer implements KafkaMessageConsumer
     protected function commitMessage(Message $message, KafkaConsumer $consumer): Message
     {
         try {
-            if ($message->err === 0) {
+            if (0 === $message->err) {
                 $consumer->commitAsync($message);
             }
         } catch (Throwable $exception) {
@@ -54,7 +54,7 @@ abstract class AbstractKafkaConsumer implements KafkaMessageConsumer
             ]);
         } finally {
             try {
-                if ($message->err === 0) {
+                if (0 === $message->err) {
                     $topic = $consumer->newTopic(topic_name: $message->topic_name);
                     $part = new TopicPartition($message->topic_name, $message->partition, $message->offset);
 

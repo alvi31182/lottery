@@ -31,10 +31,10 @@ services:
 
     App\Lottery\Model\ReadLotteryStorage:
         public: true
-        class: App\Lottery\Persistence\Doctrine\LotteryRepository
+        class: App\Lottery\Infrastructure\Persistence\Doctrine\LotteryRepository
 
     App\Lottery\Model\WriteLotteryStorage:
-        class: App\Lottery\Persistence\Doctrine\LotteryRepository
+        class: App\Lottery\Infrastructure\Persistence\Doctrine\LotteryRepository
 
     App\Core\ExceptionListener\RequestExceptionListener:
         tags:
