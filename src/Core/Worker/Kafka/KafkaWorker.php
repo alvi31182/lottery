@@ -7,11 +7,11 @@ namespace App\Core\Worker\Kafka;
 use App\Core\Infrastructure\Kafka\Consumer\KafkaConsumerService;
 use App\Lottery\Application\UseCase\LotteryCreateHandler;
 use React\EventLoop\LoopInterface;
-use SplQueue;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use SplQueue;
 use Exception;
 
 #[AsCommand(
@@ -19,7 +19,7 @@ use Exception;
 )]
 final class KafkaWorker extends Command
 {
-    private const BATCH_SIZE = 1;
+    private const BATCH_SIZE = 10;
     private const MESSAGE_COUNT = 0;
     private readonly SplQueue $messageQueue;
 

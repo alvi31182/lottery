@@ -20,6 +20,7 @@ final class ProcessConsumeCommand extends Command
     {
         parent::__construct($name);
     }
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         parent::execute($input, $output);

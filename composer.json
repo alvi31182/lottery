@@ -45,7 +45,8 @@
         "symfony/polyfill": "^1.28",
         "vimeo/psalm": "^5.17",
         "phpunit/phpunit": "^10.5",
-        "slevomat/coding-standard": "^8.14"
+        "slevomat/coding-standard": "^8.14",
+        "friendsofphp/php-cs-fixer": "^3.41"
     },
     "config": {
         "allow-plugins": {

@@ -11,9 +11,10 @@ use Doctrine\ORM\EntityRepository;
 /**
  * @method LotteryAward|null find($id, $lockMode = null, $lockVersion = null)
  * @method LotteryAward|null findOneBy(array $criteria, array $orderBy = null)
+ *
  * @template-extends EntityRepository<LotteryAward>
  */
-class LotteryAwardRepository extends EntityRepository
+final class LotteryAwardRepository extends EntityRepository
 {
     public function __construct(EntityManagerInterface $em)
     {

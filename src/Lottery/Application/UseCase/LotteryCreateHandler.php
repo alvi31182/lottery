@@ -29,7 +29,7 @@ final readonly class LotteryCreateHandler
             $this->logger->error(
                 message: $exception->getMessage(),
                 context: [
-                    'trace' => $exception->getTrace()
+                    'trace' => $exception->getTrace(),
                 ]
             );
         }

@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Core\Infrastructure\Kafka\Consumer;
 
 use App\Core\Infrastructure\Kafka\Consumer\Enum\ConsumeTopic;
-use Exception;
 use RdKafka\Conf;
 use RdKafka\KafkaConsumer;
 use RdKafka\Message;
 use RdKafka\TopicPartition;
+use Exception;
 use Throwable;
 
 final class KafkaConsumerService extends AbstractKafkaConsumer implements KafkaMessageConsumer
@@ -21,7 +21,7 @@ final class KafkaConsumerService extends AbstractKafkaConsumer implements KafkaM
     protected function buildConsumerConfig(): Conf
     {
         $conf = new Conf();
-        $conf->set("metadata.broker.list", $this->dns);
+        $conf->set('metadata.broker.list', $this->dns);
         $conf->set('group.id', $this->kafkaTopicPrefix . $this->consumerGroup);
         $conf->set('enable.auto.commit', 'false');
         $conf->set('enable.auto.offset.store', 'false');
@@ -30,19 +30,19 @@ final class KafkaConsumerService extends AbstractKafkaConsumer implements KafkaM
         $conf->set('enable.partition.eof', 'true');
         $conf->setErrorCb(
             function (mixed $error, string $reason): void {
-                if ($error === RD_KAFKA_RESP_ERR__FATAL) {
+                if (RD_KAFKA_RESP_ERR__FATAL === $error) {
                     $this->logger->critical(
-                        message: "KAFKA FATAL ERROR",
+                        message: 'KAFKA FATAL ERROR',
                         context: [
-                            "message" => sprintf("Error %d %s. Reason: %s", $error, rd_kafka_err2str($error), $reason),
+                            'message' => sprintf('Error %d %s. Reason: %s', $error, rd_kafka_err2str($error), $reason),
                         ],
                     );
                 }
             },
         );
 
-        /** @psalm-suppress UndefinedConstant */
-        $conf->setRebalanceCb(function (KafkaConsumer $kafka, string $err, ?array $partitions = null): void {
+        /* @psalm-suppress UndefinedConstant */
+        $conf->setRebalanceCb(function (KafkaConsumer $kafka, string $err, array $partitions = null): void {
             switch ($err) {
                 case RD_KAFKA_RESP_ERR__ASSIGN_PARTITIONS:
                     /** @var TopicPartition $topicPartition */
@@ -95,13 +95,13 @@ final class KafkaConsumerService extends AbstractKafkaConsumer implements KafkaM
     protected function subscribeToTopics(): array
     {
         return [
-            $this->kafkaTopicPrefix . ConsumeTopic::PLAYER_STAKED->value
+            $this->kafkaTopicPrefix . ConsumeTopic::PLAYER_STAKED->value,
         ];
     }
 
     /**
-     * @throws Exception
-     * @throws Throwable
+     * @throws \Exception
+     * @throws \Throwable
      */
     public function consumeFromKafka(): Message
     {
@@ -110,6 +110,7 @@ final class KafkaConsumerService extends AbstractKafkaConsumer implements KafkaM
             $consumer->subscribe(topics: $this->subscribeToTopics());
             $message = $consumer->consume(2_000);
             $this->commitMessage($message, $consumer);
+
             return $message;
         } catch (Throwable $exception) {
             $this->logger->error(

@@ -25,20 +25,19 @@ final class PlayerCreateStakeToGame extends AbstractController
      * @psalm-suppress UndefinedClass
      * @psalm-suppress UndefinedConstant
      *
-     * @return JsonResponse
      * @throws \JsonException
      * @throws \RdKafka\Exception
      */
     public function __invoke(): JsonResponse
     {
         $conf = new Conf();
-        $conf->set('log_level', (string)LOG_DEBUG);
+        $conf->set('log_level', (string) LOG_DEBUG);
         $conf->set('debug', 'topic');
-        $conf->set('socket.timeout.ms', "50");
-        $conf->set('queue.buffering.max.messages', "1000");
+        $conf->set('socket.timeout.ms', '50');
+        $conf->set('queue.buffering.max.messages', '1000');
 
         $rk = new Producer($conf);
-        $rk->addBrokers("lottery_kafka");
+        $rk->addBrokers('lottery_kafka');
 
         $data = [
             'message' => [
@@ -47,8 +46,8 @@ final class PlayerCreateStakeToGame extends AbstractController
             'game' => [
                 'playerId' => Uuid::uuid7()->toString(),
                 'gameId' => Uuid::uuid7()->toString(),
-                'stake' => (string)rand(1000, 20000)
-            ]
+                'stake' => (string) rand(1000, 20000),
+            ],
         ];
 
         $payload = json_encode($data, JSON_THROW_ON_ERROR | JSON_FORCE_OBJECT);
@@ -64,7 +63,7 @@ final class PlayerCreateStakeToGame extends AbstractController
         $rk->poll(2000);
 
         return new JsonResponse([
-            'success' => 'topic created'
+            'success' => 'topic created',
         ]);
     }
 }

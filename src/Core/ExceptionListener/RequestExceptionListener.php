@@ -40,7 +40,7 @@ final class RequestExceptionListener
             $errors[] = (string) $violation->getMessage();
 
             $filterParameters = array_filter($parameters, static function ($param) {
-                return (is_scalar($param) || is_object($param));
+                return is_scalar($param) || is_object($param);
             });
 
             $errors = array_merge($errors, array_map('strval', $filterParameters));

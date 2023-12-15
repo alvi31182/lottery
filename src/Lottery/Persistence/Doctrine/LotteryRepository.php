@@ -14,6 +14,7 @@ use Throwable;
 
 /**
  * @psalm-suppress MissingTemplateParam
+ *
  * @method Lottery|null find($id, $lockMode = null, $lockVersion = null)
  * @method Lottery|null findOneBy(array $criteria, ?array $orderBy = null)
  */
