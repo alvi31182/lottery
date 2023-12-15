@@ -45,7 +45,10 @@
         "symfony/polyfill": "^1.28",
         "vimeo/psalm": "^5.17",
         "phpunit/phpunit": "^10.5",
-        "slevomat/coding-standard": "^8.14"
+        "slevomat/coding-standard": "^8.14",
+        "symfony/browser-kit": "^7.0.0",
+        "symfony/css-selector": "^7.0.0",
+        "symfony/phpunit-bridge": "^7.0"
     },
     "config": {
         "allow-plugins": {
