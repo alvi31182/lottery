@@ -6,13 +6,16 @@ namespace App\Core\Worker\Kafka;
 
 use App\Core\Infrastructure\Kafka\Consumer\KafkaConsumerService;
 use App\Lottery\Application\UseCase\LotteryCreateHandler;
+use RdKafka\Message;
 use React\EventLoop\LoopInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use SplQueue;
 use Exception;
+use Throwable;
 
 #[AsCommand(
     name: 'app:consume'
@@ -20,7 +23,6 @@ use Exception;
 final class KafkaWorker extends Command
 {
     private const BATCH_SIZE = 10;
-    private const MESSAGE_COUNT = 0;
     private readonly SplQueue $messageQueue;
 
     public function __construct(
@@ -38,41 +40,58 @@ final class KafkaWorker extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $increment = self::MESSAGE_COUNT;
-        $this->loop->addPeriodicTimer(interval: 1, callback: function () use (&$increment) {
-            $message = $this->consumer->consumeFromKafka();
-
-            /* @psalm-suppress UndefinedConstant */
-            switch ($message->err) {
-                case RD_KAFKA_RESP_ERR_NO_ERROR:
-                    $this->messageQueue->enqueue(
-                        new KafkaQueuedMessage(
-                            message: $message,
-                            serialNumber: $increment
-                        )
-                    );
-
-                    if ($this->messageQueue->count() >= self::BATCH_SIZE) {
-                        $this->processBatchSize();
-                        $increment = 0;
-                    }
-                    ++$increment;
-
-                    break;
-                case RD_KAFKA_RESP_ERR__PARTITION_EOF:
-                    echo "No more messages; will wait for more\n";
-                    break;
-                case RD_KAFKA_RESP_ERR__TIMED_OUT:
-                    echo "Timed out\n";
-                    break;
-                default:
-                    throw new Exception($message->errstr(), $message->err);
-            }
+        $this->loop->addPeriodicTimer(interval: 1, callback: function () use ($output) {
+            $this->consumeAndProcessMessages($output);
         });
 
         $this->loop->run();
 
         return Command::SUCCESS;
+    }
+
+    /**
+     * @throws Throwable
+     * @psalm-suppress UndefinedConstant
+     */
+    private function consumeAndProcessMessages(OutputInterface $output): void
+    {
+        $message = $this->consumer->consumeFromKafka();
+
+        switch ($message->err) {
+            case RD_KAFKA_RESP_ERR_NO_ERROR:
+                $this->enqueueMessage($message);
+                break;
+            case RD_KAFKA_RESP_ERR__PARTITION_EOF:
+                $this->logMessage("No more messages; will wait for more", $output);
+                break;
+            case RD_KAFKA_RESP_ERR__TIMED_OUT:
+                $this->logMessage("Timed out", $output);
+                break;
+            default:
+                throw new Exception($message->errstr(), $message->err);
+        }
+    }
+
+    private function enqueueMessage(Message $message): void
+    {
+
+        $increment = $this->incrementCounter();
+
+        $this->messageQueue->enqueue(
+            new KafkaQueuedMessage($message, $increment)
+        );
+
+        if ($this->messageQueue->count() >= self::BATCH_SIZE) {
+            $this->processBatchSize();
+        }
+    }
+
+    private function incrementCounter(): int
+    {
+        static $increment = 0;
+        ++$increment;
+
+        return $increment;
     }
 
     private function processBatchSize(): void
@@ -83,5 +102,14 @@ final class KafkaWorker extends Command
 
             $this->handler->handler(message: $message->payload);
         }
+    }
+
+    private function logMessage(string $message, OutputInterface $output): void
+    {
+        $greenStyle = new OutputFormatterStyle('green');
+
+        $output->getFormatter()->setStyle('green', $greenStyle);
+
+        $output->writeln('<green>' . $message . '</green>');
     }
 }
