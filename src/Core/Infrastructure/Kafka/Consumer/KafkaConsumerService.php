@@ -5,49 +5,91 @@ declare(strict_types=1);
 namespace App\Core\Infrastructure\Kafka\Consumer;
 
 use App\Core\Infrastructure\Kafka\Consumer\Enum\ConsumeTopic;
-use App\Core\Infrastructure\Kafka\Settings\Handler\KafkaErrorHandler;
-use App\Core\Infrastructure\Kafka\Settings\Handler\KafkaRebalanceHanlder;
+use Exception;
 use RdKafka\Conf;
-use RdKafka\Exception;
 use RdKafka\KafkaConsumer;
 use RdKafka\Message;
+use RdKafka\TopicPartition;
+use Throwable;
 
 final class KafkaConsumerService extends AbstractKafkaConsumer implements KafkaMessageConsumer
 {
     /**
-     * @psalm-suppress UndefinedClass
+     * @psalm-suppress UndefinedConstant
+     * @psalm-suppress UndefinedFunction
      */
     protected function buildConsumerConfig(): Conf
     {
         $conf = new Conf();
         $conf->set("metadata.broker.list", $this->dns);
         $conf->set('group.id', $this->kafkaTopicPrefix . $this->consumerGroup);
+        $conf->set('enable.auto.commit', 'false');
+        $conf->set('enable.auto.offset.store', 'false');
+        $conf->set('auto.commit.interval.ms', '1000');
+        $conf->set('session.timeout.ms', '36000');
         $conf->set('enable.partition.eof', 'true');
-        $conf->set('auto.offset.reset', 'earliest');
+        $conf->setErrorCb(
+            function (mixed $error, string $reason): void {
+                if ($error === RD_KAFKA_RESP_ERR__FATAL) {
+                    $this->logger->critical(
+                        message: "KAFKA FATAL ERROR",
+                        context: [
+                            "message" => sprintf("Error %d %s. Reason: %s", $error, rd_kafka_err2str($error), $reason),
+                        ],
+                    );
+                }
+            },
+        );
+
+        /** @psalm-suppress UndefinedConstant */
+        $conf->setRebalanceCb(function (KafkaConsumer $kafka, string $err, ?array $partitions = null): void {
+            switch ($err) {
+                case RD_KAFKA_RESP_ERR__ASSIGN_PARTITIONS:
+                    /** @var TopicPartition $topicPartition */
+                    foreach ($partitions as $topicPartition) {
+                        $this->logger->info(
+                            sprintf(
+                                'Assign: %s %d %d',
+                                $topicPartition->getTopic(),
+                                $topicPartition->getPartition(),
+                                $topicPartition->getOffset(),
+                            ),
+                        );
+                    }
+
+                    $kafka->assign($partitions);
+                    break;
+
+                case RD_KAFKA_RESP_ERR__REVOKE_PARTITIONS:
+                    /** @var TopicPartition $topicPartition */
+                    foreach ($partitions as $topicPartition) {
+                        $this->logger->info(
+                            sprintf(
+                                'Assign: %s %d %d',
+                                $topicPartition->getTopic(),
+                                $topicPartition->getPartition(),
+                                $topicPartition->getOffset(),
+                            ),
+                        );
+                    }
+                    $kafka->assign(null);
+                    break;
+                default:
+                    throw new Exception($err);
+            }
+        });
 
         return $conf;
     }
 
     /**
-     * @throws Exception
      * @psalm-suppress UndefinedClass
      */
     protected function kafkaConsumer(): KafkaConsumer
     {
-        $conf = $this->buildConsumerConfig();
-        $errorHandler = new KafkaErrorHandler($this->logger);
-        $conf->setErrorCb([$errorHandler, 'handleError']);
-
-        $rebalancedHandler = new KafkaRebalanceHanlder($this->logger);
-        $conf->setRebalanceCb([$rebalancedHandler, 'handleRebalanceCb']);
-
-        $consumer = new KafkaConsumer(
-            $conf
+        return new KafkaConsumer(
+            $this->buildConsumerConfig()
         );
-
-        $consumer->subscribe(topics: $this->subscribeToTopics());
-
-        return $consumer;
     }
 
     protected function subscribeToTopics(): array
@@ -58,21 +100,22 @@ final class KafkaConsumerService extends AbstractKafkaConsumer implements KafkaM
     }
 
     /**
-     * @psalm-suppress UndefinedClass
      * @throws Exception
+     * @throws Throwable
      */
     public function consumeFromKafka(): Message
     {
-        $consumer = $this->kafkaConsumer();
-
-        $msg = $consumer->consume(timeout_ms: 2_000);
-        dump($msg->payload);
-        $message = $this->commitMessage(
-            message: $msg,
-            consumer: $consumer
-        );
-      //  dump($message->payload);
-
-        return $message;
+        try {
+            $consumer = $this->kafkaConsumer();
+            $consumer->subscribe(topics: $this->subscribeToTopics());
+            $message = $consumer->consume(2_000);
+            $this->commitMessage($message, $consumer);
+            return $message;
+        } catch (Throwable $exception) {
+            $this->logger->error(
+                message: "Exception in Kafka consumer: {$exception->getMessage()}"
+            );
+            throw $exception;
+        }
     }
 }

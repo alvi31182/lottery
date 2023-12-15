@@ -18,7 +18,9 @@ services:
     App\Core\Worker\Kafka\KafkaWorker:
         arguments:
             [
-                '@App\Core\Infrastructure\Kafka\Consumer\KafkaConsumerService'
+                '@App\Core\Infrastructure\Kafka\Consumer\KafkaConsumerService',
+                '@React\EventLoop\LoopInterface',
+                '@App\Lottery\Application\UseCase\LotteryCreateHandler'
             ]
 
     App\Core\Infrastructure\Kafka\Consumer\KafkaConsumerService:
@@ -31,6 +33,13 @@ services:
         public: true
         class: App\Lottery\Persistence\Doctrine\LotteryRepository
 
+    App\Lottery\Model\WriteLotteryStorage:
+        class: App\Lottery\Persistence\Doctrine\LotteryRepository
+
     App\Core\ExceptionListener\RequestExceptionListener:
         tags:
             - { name: kernel.event_listener, event: kernel.exception }
+
+    App\Lottery\Application\UseCase\LotteryCreateHandler: ~
+    React\EventLoop\StreamSelectLoop: ~
+    React\EventLoop\LoopInterface: '@React\EventLoop\StreamSelectLoop'

@@ -38,25 +38,6 @@ abstract class AbstractKafkaConsumer implements KafkaMessageConsumer
      * @throws Exception
      */
     abstract protected function subscribeToTopics(): array;
-//    {
-//      //  dd($consumer->)
-////        $conf = new Conf();
-////        $conf->set("metadata.broker.list", $this->dns);
-////        $conf->set('group.id', $this->kafkaTopicPrefix . $this->consumerGroup);
-////        $conf->set('enable.auto.commit', 'false');
-////        $conf->set('enable.auto.offset.store', 'false');
-////        $conf->set('auto.commit.interval.ms', '1000');
-////        $conf->set('session.timeout.ms', '36000');
-////        $conf->set('enable.partition.eof', 'true');
-////
-////        $consumer = new KafkaConsumer($conf);
-//
-//        $consumer->subscribe([
-//            $this->kafkaTopicPrefix . ConsumeTopic::PLAYER_STAKED->value
-//        ]);
-//
-//        return $consumer;
-//    }
 
     /**
      * @psalm-suppress UndefinedClass

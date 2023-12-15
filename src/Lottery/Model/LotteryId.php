@@ -19,27 +19,26 @@ class LotteryId
         #[ORM\Column(type: 'uuid', unique:true, nullable: false)]
         #[ORM\GeneratedValue(strategy:'CUSTOM')]
         #[ORM\CustomIdGenerator(class:UuidGenerator::class)]
-        private string $id
+        private UuidInterface $id
     ) {
-        $uuid = Uuid::fromString($id);
 
-        if (!Uuid::isValid($this->id)) {
+        if (!Uuid::isValid($this->id->toString())) {
             throw new InvalidArgumentException('Invalid UUIDv7.');
         }
     }
 
-    public function getId(): string
+    public function getId(): UuidInterface
     {
         return $this->id;
     }
 
-    public static function generateUuidV7(): UuidInterface
+    public static function generateUuidV7(): self
     {
-        return Uuid::uuid7();
+        return new self(Uuid::uuid7());
     }
 
-    public function equals(self $other): bool
-    {
-        return Uuid::fromString($this->getId())->equals(Uuid::fromString($other->getId()));
-    }
+//    public function equals(self $other): bool
+//    {
+//        return Uuid::fromString($this->getId())->equals(Uuid::fromString($other->getId())->toString());
+//    }
 }

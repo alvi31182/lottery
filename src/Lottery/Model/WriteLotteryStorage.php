@@ -6,5 +6,5 @@ namespace App\Lottery\Model;
 
 interface WriteLotteryStorage
 {
-    public function createLottery(): void;
+    public function createLottery(Lottery $lottery): void;
 }

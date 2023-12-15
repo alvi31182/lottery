@@ -4,38 +4,33 @@ declare(strict_types=1);
 
 namespace App\Lottery\Application\UseCase;
 
-use App\Lottery\Application\Dto\Request\StartLotteryRequest;
-use App\Lottery\Application\Exception\LotteryNotFoundException;
-use App\Lottery\Model\ReadLotteryStorage;
+use App\Lottery\Model\Lottery;
+use App\Lottery\Model\WriteLotteryStorage;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
 final readonly class LotteryCreateHandler
 {
     public function __construct(
-        private ReadLotteryStorage $readLotteryStorage,
-        private LoggerInterface $logger
+        private WriteLotteryStorage $writeLotteryStorage,
+        private LoggerInterface $logger,
     ) {
     }
 
-    public function handler(StartLotteryRequest $request): void
+    public function handler(string $message): void
     {
+        $messageData = json_decode($message, true, JSON_THROW_ON_ERROR);
 
         try {
-            $lottery = $this->readLotteryStorage->findByPlayerWithGameId(
-                playerId: $request->playerId,
-                gameId: $request->gameId
-            );
+            $lottery = Lottery::createStartLottery($messageData['game']['playerId'], $messageData['game']['gameId']);
 
-            if ($lottery === null) {
-                throw new LotteryNotFoundException('Lottery not found by playerId');
-            }
-
-            $lottery->createStartLottery(
-            );
+            $this->writeLotteryStorage->createLottery($lottery);
         } catch (Throwable $exception) {
             $this->logger->error(
-                message: $exception->getMessage()
+                message: $exception->getMessage(),
+                context: [
+                    'trace' => $exception->getTrace()
+                ]
             );
         }
     }
