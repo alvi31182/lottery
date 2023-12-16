@@ -23,7 +23,7 @@ final readonly class UpdateLotteryStatusHandler implements UpdateLotteryStatus
     public function updateStatus(array $lotteryList): void
     {
         try {
-            $this->writeLotteryStorage->updateLotteryStatusToStarted(lotteryList: $lotteryList);
+            $this->writeLotteryStorage->updateLotteryStatusToStarted(lotteryListWaiting: $lotteryList);
         } catch (Throwable $exception) {
             $this->logger->error(
                 message: $exception->getMessage(),

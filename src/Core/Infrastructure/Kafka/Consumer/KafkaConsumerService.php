@@ -92,6 +92,9 @@ final class KafkaConsumerService extends AbstractKafkaConsumer implements KafkaM
         );
     }
 
+    /**
+     * @return array<string>
+     */
     protected function subscribeToTopics(): array
     {
         return [

@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Lottery\Infrastructure\Persistence\Doctrine;
 
-use App\Lottery\Application\Dto\LotteryList;
+use App\Lottery\Application\Dto\LotteryListInStarted;
+use App\Lottery\Application\Dto\LotteryListInWaiting;
 use App\Lottery\Model\Lottery;
 use App\Lottery\Model\ReadLotteryStorage;
 use App\Lottery\Model\WriteLotteryStorage;
@@ -46,10 +47,10 @@ class LotteryRepository extends EntityRepository implements ReadLotteryStorage, 
     }
 
     /**
-     * @return array<LotteryList>
+     * @return array<LotteryListInWaiting>
      * @throws Exception
      */
-    public function getLotteryList(): array
+    public function getLotteryListByStatusInWaiting(): array
     {
         $connection = $this->getEntityManager()->getConnection();
 
@@ -58,19 +59,18 @@ class LotteryRepository extends EntityRepository implements ReadLotteryStorage, 
         $SQL = <<<SQL
             SELECT 
                 lott.game_id, 
-                lott.player_id, 
-                lott.stake
-            FROM lottery AS lott WHERE lott.updated_at IS NULL
+                lott.player_id
+            FROM lottery AS lott WHERE status = 'in_waiting' 
+                                   AND lott.updated_at IS NULL
 SQL;
         $results = $connection->executeQuery(
             sql: $SQL
         )->fetchAllAssociative();
 
         foreach ($results as $result) {
-            $lotteryDtoList[] = new LotteryList(
+            $lotteryDtoList[] = new LotteryListInWaiting(
                 gameId: $result['game_id'],
-                playerId: $result['player_id'],
-                stake: $result['stake']
+                playerId: $result['player_id']
             );
         }
 
@@ -78,20 +78,57 @@ SQL;
     }
 
     /**
-     * @param array<LotteryList> $lotteryList
+     * @return array<LotteryListInStarted>
      *
      * @throws Exception
      */
-    public function updateLotteryStatusToStarted(array $lotteryList): void
+    public function getLotteryListInStarted(): array
+    {
+        $connection = $this->getEntityManager()->getConnection();
+
+        $lotteryStartedDtoList = [];
+
+        $SQL = <<<SQL
+            SELECT
+                lott.id,
+                lott.game_id, 
+                lott.player_id,
+                lott.stake
+            FROM lottery AS lott WHERE status = 'started' 
+                                   AND lott.updated_at IS NULL
+SQL;
+
+        $results = $connection->executeQuery(
+            sql: $SQL
+        )->fetchAllAssociative();
+
+        foreach ($results as $result) {
+            $lotteryStartedDtoList[] = new LotteryListInStarted(
+                lotteryId: $result['player_id'],
+                gameId: $result['game_id'],
+                playerId: $result['player_id'],
+                stake: $result['stake']
+            );
+        }
+
+        return $lotteryStartedDtoList;
+    }
+
+    /**
+     * @param array<LotteryListInWaiting> $lotteryListWaiting
+     *
+     * @throws Exception
+     */
+    public function updateLotteryStatusToStarted(array $lotteryListWaiting): void
     {
         $connection = $this->getEntityManager()->getConnection();
 
         try {
             $connection->beginTransaction();
 
-            $SQL = $this->buildUpdateQuery($lotteryList);
+            $SQL = $this->buildUpdateQuery($lotteryListWaiting);
 
-            $parameters = $this->extractPlayerIds($lotteryList);
+            $parameters = $this->extractPlayerIdsForInWaiting($lotteryListWaiting);
 
             $connection->executeStatement($SQL, $parameters);
             $connection->commit();
@@ -102,13 +139,11 @@ SQL;
     }
 
     /**
-     * @param array<LotteryList> $lotteryList
-     *
-     * @return string
+     * @param array<LotteryListInWaiting> $lotteryListWaiting
      */
-    private function buildUpdateQuery(array $lotteryList): string
+    private function buildUpdateQuery(array $lotteryListWaiting): string
     {
-        $placeholders = implode(',', array_fill(0, count($lotteryList), ':playerId'));
+        $placeholders = implode(',', array_fill(0, count($lotteryListWaiting), '?'));
 
         return <<<SQL
                 UPDATE lottery
@@ -118,12 +153,12 @@ SQL;
     }
 
     /**
-     * @param array<LotteryList> $lotteryList
+     * @param array<LotteryListInWaiting> $lotteryListWaiting
      *
      * @return array<string>
      */
-    private function extractPlayerIds(array $lotteryList): array
+    private function extractPlayerIdsForInWaiting(array $lotteryListWaiting): array
     {
-        return array_map(static fn($lottery) => $lottery->playerId, $lotteryList);
+        return array_map(static fn($lottery) => $lottery->playerId, $lotteryListWaiting);
     }
 }

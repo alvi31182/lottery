@@ -6,4 +6,5 @@ namespace App\Lottery\Model;
 
 interface WriteLotteryAward
 {
+    public function createAward(LotteryAward $lotteryAward): void;
 }

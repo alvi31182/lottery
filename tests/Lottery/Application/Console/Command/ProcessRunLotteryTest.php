@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Lottery\Application\Console\Command;
 
 use App\Lottery\Application\Console\Command\ProcessRunLottery;
-use App\Lottery\Application\Dto\LotteryList;
+use App\Lottery\Application\Dto\LotteryListInWaiting;
 use App\Lottery\Application\UseCase\UpdateLotteryStatus;
 use App\Lottery\Model\ReadLotteryStorage;
 use PHPUnit\Framework\MockObject\Exception;
@@ -21,13 +21,13 @@ class ProcessRunLotteryTest extends TestCase
     public function testRunSelectionWinner(): void
     {
         $lotteryList = [
-            new LotteryList('player1', 'game1', '100.00'),
-            new LotteryList('player2', 'game2', '150.00'),
+            new LotteryListInWaiting('player1', 'game1'),
+            new LotteryListInWaiting('player2', 'game2'),
         ];
 
         $readLotteryStorage = $this->createMock(ReadLotteryStorage::class);
         $readLotteryStorage->expects($this->once())
-            ->method('getLotteryList')
+            ->method('getLotteryListByStatusInWaiting')
             ->willReturn($lotteryList);
 
         $updateLotteryStatus = $this->createMock(UpdateLotteryStatus::class);
