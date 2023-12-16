@@ -17,7 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
     description: 'Run process consume message from Kafka topic',
     hidden: false
 )]
-final class ProcessConsumeCommand extends Command
+final class ProcessRunLottery extends Command
 {
     private const PERCENT = 33;
     public function __construct(

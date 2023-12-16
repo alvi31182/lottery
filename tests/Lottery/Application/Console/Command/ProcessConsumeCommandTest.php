@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Lottery\Application\Console\Command;
 
-use App\Lottery\Application\Console\Command\ProcessConsumeCommand;
+use App\Lottery\Application\Console\Command\ProcessRunLottery;
 use App\Lottery\Application\Dto\LotteryList;
 use App\Lottery\Application\UseCase\UpdateLotteryStatus;
 use App\Lottery\Model\ReadLotteryStorage;
@@ -33,7 +33,7 @@ class ProcessConsumeCommandTest extends TestCase
         $updateLotteryStatus = $this->createMock(UpdateLotteryStatus::class);
 
         $application = new Application();
-        $application->add(new ProcessConsumeCommand($readLotteryStorage, $updateLotteryStatus));
+        $application->add(new ProcessRunLottery($readLotteryStorage, $updateLotteryStatus));
 
         $command = $application->find('app:lottery_list');
         $commandTester = new CommandTester($command);
