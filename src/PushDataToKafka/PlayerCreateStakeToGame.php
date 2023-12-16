@@ -17,10 +17,6 @@ final class PlayerCreateStakeToGame extends AbstractController
     private const TOPIC_NAME = 'player.v1.staked';
     private const TOPIC_PREFIX = 'lottery_';
 
-    public function __construct()
-    {
-    }
-
     /**
      * @psalm-suppress UndefinedClass
      * @psalm-suppress UndefinedConstant
