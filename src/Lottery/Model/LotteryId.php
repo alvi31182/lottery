@@ -36,8 +36,8 @@ class LotteryId
         return new self(Uuid::uuid7());
     }
 
-    //    public function equals(self $other): bool
-    //    {
-    //        return Uuid::fromString($this->getId())->equals(Uuid::fromString($other->getId())->toString());
-    //    }
+    public function equals(self $other): bool
+    {
+        return Uuid::fromString($this->getId()->toString()) == $other;
+    }
 }
