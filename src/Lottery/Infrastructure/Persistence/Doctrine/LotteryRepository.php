@@ -132,7 +132,7 @@ SQL;
 
             $connection->executeStatement($SQL, $parameters);
             $connection->commit();
-        } catch (Exception  $e) {
+        } catch (Exception $e) {
             $connection->rollBack();
             $this->logger->error($e->getMessage());
         }
