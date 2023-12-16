@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class ProcessConsumeCommandTest extends TestCase
+class ProcessRunLotteryTest extends TestCase
 {
     /**
      * @throws Exception
