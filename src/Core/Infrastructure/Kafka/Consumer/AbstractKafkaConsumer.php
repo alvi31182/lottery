@@ -39,7 +39,7 @@ abstract class AbstractKafkaConsumer implements KafkaMessageConsumer
      *
      * @throws Exception
      */
- //   abstract protected function subscribeToTopics(): array;
+    abstract protected function subscribeToTopics(): array;
 
     /**
      * @psalm-suppress UndefinedClass
