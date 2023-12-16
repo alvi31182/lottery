@@ -46,8 +46,8 @@ class LotteryRepository extends EntityRepository implements ReadLotteryStorage, 
     }
 
     /**
-     * @throws Exception
      * @return array<LotteryList>
+     * @throws Exception
      */
     public function getLotteryList(): array
     {
@@ -75,5 +75,55 @@ SQL;
         }
 
         return $lotteryDtoList;
+    }
+
+    /**
+     * @param array<LotteryList> $lotteryList
+     *
+     * @throws Exception
+     */
+    public function updateLotteryStatusToStarted(array $lotteryList): void
+    {
+        $connection = $this->getEntityManager()->getConnection();
+
+        try {
+            $connection->beginTransaction();
+
+            $SQL = $this->buildUpdateQuery($lotteryList);
+
+            $parameters = $this->extractPlayerIds($lotteryList);
+
+            $connection->executeStatement($SQL, $parameters);
+            $connection->commit();
+        } catch (Exception  $e) {
+            $connection->rollBack();
+            $this->logger->error($e->getMessage());
+        }
+    }
+
+    /**
+     * @param array<LotteryList> $lotteryList
+     *
+     * @return string
+     */
+    private function buildUpdateQuery(array $lotteryList): string
+    {
+        $placeholders = implode(',', array_fill(0, count($lotteryList), ':playerId'));
+
+        return <<<SQL
+                UPDATE lottery
+                    SET status = 'started'
+                WHERE player_id IN ($placeholders) AND status = 'in_waiting'
+SQL;
+    }
+
+    /**
+     * @param array<LotteryList> $lotteryList
+     *
+     * @return array<string>
+     */
+    private function extractPlayerIds(array $lotteryList): array
+    {
+        return array_map(static fn($lottery) => $lottery->playerId, $lotteryList);
     }
 }

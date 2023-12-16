@@ -32,6 +32,10 @@ final class ProcessRunLottery extends Command
     {
         $lotteryList = $this->readLotteryStorage->getLotteryList();
 
+        if (!empty($lotteryList)) {
+            $this->updateLotteryStatus->updateStatus(lotteryList: $lotteryList);
+        }
+
         [$prize, $winner] = $this->runSelectionWinner(lotteryList: $lotteryList);
 
         $output->write(
