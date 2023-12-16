@@ -17,7 +17,6 @@
         "symfony/http-kernel": "^7.0",
         "symfony/http-foundation": "^7.0",
         "symfony/routing": "^7.0",
-        "doctrine/annotations": "^2.0",
         "symfony/config": "^7.0",
         "doctrine/doctrine-bundle": "^2.11",
         "doctrine/doctrine-migrations-bundle": "^3.3",
@@ -38,7 +37,8 @@
         "symfony/property-access": "^7.0.0",
         "symfony/property-info": "^7.0.0",
         "symfony/serializer": "^7.0.0",
-        "react/event-loop": "^1.5"
+        "react/event-loop": "^1.5",
+        "doctrine/annotations": "^2.0"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "3.*",
