@@ -29,7 +29,7 @@ final readonly class UpdateLotteryStatusHandler implements UpdateLotteryStatus
                 message: $exception->getMessage(),
                 context: [
                     'code' => $exception->getCode(),
-                    'trace' => $exception->getTraceAsString()
+                    'trace' => $exception->getTraceAsString(),
                 ]
             );
             throw new LotteryWriteException(

@@ -23,6 +23,7 @@ use Throwable;
 final class KafkaWorker extends Command
 {
     private const BATCH_SIZE = 10;
+
     private readonly SplQueue $messageQueue;
 
     public function __construct(
