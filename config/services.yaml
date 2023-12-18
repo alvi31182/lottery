@@ -43,3 +43,6 @@ services:
     App\Lottery\Application\UseCase\LotteryCreateHandler: ~
     React\EventLoop\StreamSelectLoop: ~
     React\EventLoop\LoopInterface: '@React\EventLoop\StreamSelectLoop'
+
+imports:
+    - { resource:  ../src/Outbox/config/services.yaml }

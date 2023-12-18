@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Lottery\Infrastructure\Outbox;
 
-use App\Lottery\Model\Events\DomainEvent;
+use App\Lottery\Model\Events\AwardCreated;
 
 interface OutboxInterface
 {
-    public function addToOutbox(DomainEvent $domainEvent): void;
+    public function addToOutbox(AwardCreated $domainEvent): void;
 }
