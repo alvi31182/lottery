@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Lottery\Application\Console\Command;
 
 use App\Lottery\Application\Console\Command\ProcessStartLottery;
-use App\Lottery\Application\Event\EventData\LotteryStatusUpdated;
+use App\Lottery\Application\Events\EventData\LotteryStatusUpdated;
 use App\Lottery\Model\ReadLotteryStorage;
 use PHPUnit\Framework\MockObject\Exception;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;

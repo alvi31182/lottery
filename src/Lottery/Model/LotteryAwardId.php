@@ -22,6 +22,11 @@ class LotteryAwardId
     ) {
     }
 
+    public function getIdString(): string
+    {
+        return $this->id->toString();
+    }
+
     public function getId(): UuidInterface
     {
         return $this->id;

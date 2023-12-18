@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Lottery\Application\UseCase;
 
-use App\Lottery\Application\Event\EventData\LotteryStatusUpdated;
+use App\Lottery\Application\Events\EventData\LotteryStatusUpdated;
 use App\Lottery\Application\Exception\LotteryUpdateException;
 use App\Lottery\Model\WriteLotteryStorage;
 use Psr\Log\LoggerInterface;

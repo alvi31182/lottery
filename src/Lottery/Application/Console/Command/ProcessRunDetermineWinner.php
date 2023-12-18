@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Lottery\Application\Console\Command;
 
 use App\Lottery\Application\Dto\LotteryListInStarted;
-use App\Lottery\Application\Event\EventData\LotteryDeterminedWinner;
+use App\Lottery\Application\Events\EventData\LotteryDeterminedWinner;
 use App\Lottery\Model\ReadLotteryStorage;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;

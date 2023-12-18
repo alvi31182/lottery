@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Lottery\Application\Console\Command;
 
-use App\Lottery\Application\Event\EventData\LotteryStatusUpdated;
+use App\Lottery\Application\Events\EventData\LotteryStatusUpdated;
 use App\Lottery\Model\ReadLotteryStorage;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
