@@ -16,7 +16,6 @@ final class AwardCreated implements DomainEvent
     public function __construct(
         public readonly string $aggregateId,
         public readonly string $lotteryId,
-        public readonly string $awardStatus,
         public readonly string $winSum,
         public ?DateTimeImmutable $occurredOn = null,
     ) {

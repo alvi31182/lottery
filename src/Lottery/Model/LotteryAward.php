@@ -61,7 +61,6 @@ class LotteryAward
         $award->recordEvent(domainEvent: new AwardCreated(
             aggregateId: $award->getId()->getIdString(),
             lotteryId: $award->getLotteryId(),
-            awardStatus: $award->getStatus()->value,
             winSum: $award->getWinSum()
         ));
 
