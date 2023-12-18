@@ -6,7 +6,7 @@ namespace App\Lottery\Shared;
 
 use App\Lottery\Application\Events\DomainEvents\Subscriber\DomainEventSubscriber;
 use App\Lottery\Infrastructure\Outbox\OutboxInterface;
-use App\Lottery\Model\Events\DomainEvent;
+use App\Lottery\Model\Events\AwardCreated;
 
 final readonly class SharedDomainEvent implements DomainEventSubscriber
 {
@@ -14,7 +14,7 @@ final readonly class SharedDomainEvent implements DomainEventSubscriber
         private OutboxInterface $outbox
     ) {
     }
-    public function handleEvent(DomainEvent $domainEvent): void
+    public function handleEvent(AwardCreated $domainEvent): void
     {
         $this->outbox->addToOutbox(domainEvent: $domainEvent);
     }
