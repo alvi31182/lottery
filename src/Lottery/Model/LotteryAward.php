@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Lottery\Model;
 
-use App\Lottery\Application\Command\Award\CreateLotteryAwardCommand;
+use App\Lottery\Application\Event\EventData\LotteryDeterminedWinner;
 use App\Lottery\Infrastructure\Persistence\Doctrine\LotteryAwardRepository;
 use App\Lottery\Model\Enum\AwardStatus;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
 use Ramsey\Uuid\Uuid;
-use DateTimeImmutable;
 
 #[ORM\Entity(repositoryClass: LotteryAwardRepository::class)]
 #[Index(
@@ -38,13 +38,13 @@ class LotteryAward
     ) {
     }
 
-    public static function createAward(CreateLotteryAwardCommand $command): self
+    public static function createAward(LotteryDeterminedWinner $event): self
     {
         return new self(
             id: new LotteryAwardId(Uuid::uuid7()),
-            lotteryId: $command->lotteryId,
+            lotteryId: $event->lotteryId,
             status: AwardStatus::PLAYED_OUT,
-            winSum: $command->winSum,
+            winSum: $event->winSum,
             createdAt: new DateTimeImmutable('now'),
             updatedAt: null,
             deletedAt: null

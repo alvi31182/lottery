@@ -34,6 +34,7 @@ class LotteryAwardId
 
     public function equals(self $other): bool
     {
+        //ToDo need refactor
         return $this->id->equals($other->getId());
     }
 }

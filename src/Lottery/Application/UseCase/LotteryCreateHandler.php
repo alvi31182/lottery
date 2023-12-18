@@ -18,7 +18,7 @@ final readonly class LotteryCreateHandler
     ) {
     }
 
-    public function handler(string $message): void
+    public function handle(string $message): void
     {
         $messageData = json_decode($message, true, JSON_THROW_ON_ERROR);
 
