@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Lottery\Application\UseCase;
 
-use App\Lottery\Application\Event\LotteryDeterminedWinner;
+use App\Lottery\Application\Event\EventData\LotteryDeterminedWinner;
 use App\Lottery\Model\LotteryAward;
 use App\Lottery\Model\WriteLotteryAward;
 

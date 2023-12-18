@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Lottery\Application\Console\Command;
 
-use App\Lottery\Application\Event\LotteryStatusUpdated;
+use App\Lottery\Application\Event\EventData\LotteryStatusUpdated;
 use App\Lottery\Model\ReadLotteryStorage;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -13,8 +13,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 #[AsCommand(
-    name: 'app:lottery_list',
-    description: 'Run process consume message from Kafka topic',
+    name: 'app:get_lottery_list',
+    description: 'Run process consume message from Kafka topic, after as consumed message and stored in DB.',
     hidden: false
 )]
 final class ProcessRunLottery extends Command

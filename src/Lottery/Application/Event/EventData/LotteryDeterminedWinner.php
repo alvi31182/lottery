@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Lottery\Application\Event;
+namespace App\Lottery\Application\Event\EventData;
 
 final readonly class LotteryDeterminedWinner
 {

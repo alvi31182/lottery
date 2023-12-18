@@ -101,7 +101,7 @@ final class KafkaWorker extends Command
             $queuedMessage = $this->messageQueue->dequeue();
             $message = $queuedMessage->getMessage();
 
-            $this->handler->handler(message: $message->payload);
+            $this->handler->handle(message: $message->payload);
         }
     }
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Lottery\Model;
 
-use App\Lottery\Application\Event\LotteryDeterminedWinner;
+use App\Lottery\Application\Event\EventData\LotteryDeterminedWinner;
 use App\Lottery\Infrastructure\Persistence\Doctrine\LotteryAwardRepository;
 use App\Lottery\Model\Enum\AwardStatus;
 use DateTimeImmutable;

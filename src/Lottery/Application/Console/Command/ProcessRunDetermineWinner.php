@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Lottery\Application\Console\Command;
 
 use App\Lottery\Application\Dto\LotteryListInStarted;
-use App\Lottery\Application\Event\LotteryDeterminedWinner;
+use App\Lottery\Application\Event\EventData\LotteryDeterminedWinner;
 use App\Lottery\Model\ReadLotteryStorage;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -15,7 +15,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 #[AsCommand(
     name: 'app:determine_winner',
-    description: 'Run determine winner by status started',
+    description: 'Run determine winner by status started after as lottery status changes to started',
     hidden: false
 )]
 final class ProcessRunDetermineWinner extends Command
