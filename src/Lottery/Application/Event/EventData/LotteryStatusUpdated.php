@@ -14,15 +14,7 @@ final class LotteryStatusUpdated
      * @param array<LotteryListInWaiting> $lotteryList
      */
     public function __construct(
-        private readonly array $lotteryList
+        public readonly array $lotteryList
     ) {
-    }
-
-    /**
-     * @return array<LotteryListInWaiting>
-     */
-    public function getLotteryList(): array
-    {
-        return $this->lotteryList;
     }
 }

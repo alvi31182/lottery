@@ -27,7 +27,7 @@ final readonly class LotteryUpdateStatusToStartedHandler
     {
         try {
             $this->writeLotteryStorage->updateLotteryStatusToStarted(
-                lotteryListWaiting: $lotteryStatusUpdatedEvent->getLotteryList()
+                lotteryListWaiting: $lotteryStatusUpdatedEvent->lotteryList
             );
         } catch (Throwable $exception) {
             $this->handleLotteryUpdateException(exception: $exception);

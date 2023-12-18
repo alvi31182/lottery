@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Lottery\Application\Console\Command;
 
-use App\Lottery\Application\Console\Command\ProcessRunLottery;
+use App\Lottery\Application\Console\Command\ProcessStartLottery;
 use App\Lottery\Application\Event\EventData\LotteryStatusUpdated;
 use App\Lottery\Model\ReadLotteryStorage;
 use PHPUnit\Framework\MockObject\Exception;
@@ -40,7 +40,7 @@ class ProcessRunLotteryTest extends KernelTestCase
                 LotteryStatusUpdated::NAME
             );
 
-        $command = new ProcessRunLottery($readLotteryStorageMock, $eventDispatcherMock);
+        $command = new ProcessStartLottery($readLotteryStorageMock, $eventDispatcherMock);
 
         $input = new ArrayInput([]);
         $output = new BufferedOutput();

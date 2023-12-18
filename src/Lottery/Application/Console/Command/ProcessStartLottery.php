@@ -17,7 +17,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
     description: 'Run process consume message from Kafka topic, after as consumed message and stored in DB.',
     hidden: false
 )]
-final class ProcessRunLottery extends Command
+final class ProcessStartLottery extends Command
 {
     public function __construct(
         private readonly ReadLotteryStorage $readLotteryStorage,
