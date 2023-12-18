@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Lottery\Application\Event\Subscriber;
+namespace App\Lottery\Application\Events\Subscriber;
 
-use App\Lottery\Application\Event\EventData\LotteryDeterminedWinner;
+use App\Lottery\Application\Events\EventData\LotteryDeterminedWinner;
 use App\Lottery\Application\UseCase\LotteryAwardCreateHandler;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 

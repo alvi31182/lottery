@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Lottery\Model;
 
-use App\Lottery\Application\Event\EventData\LotteryDeterminedWinner;
+use App\Lottery\Application\Events\EventData\LotteryDeterminedWinner;
 use App\Lottery\Infrastructure\Persistence\Doctrine\LotteryAwardRepository;
 use App\Lottery\Model\Enum\AwardStatus;
+use App\Lottery\Model\Events\AggregateRoot;
+use App\Lottery\Model\Events\AwardCreated;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
@@ -20,6 +22,8 @@ use Ramsey\Uuid\Uuid;
 )]
 class LotteryAward
 {
+    use AggregateRoot;
+
     public function __construct(
         #[ORM\Embedded(class: LotteryAwardId::class, columnPrefix: false)]
         private LotteryAwardId $id,
@@ -36,11 +40,15 @@ class LotteryAward
         #[ORM\Column(type: 'datetimetz_immutable', nullable: true)]
         private ?DateTimeImmutable $deletedAt,
     ) {
+        $this->init();
     }
 
+    /**
+     * @throws \Exception
+     */
     public static function createAward(LotteryDeterminedWinner $event): self
     {
-        return new self(
+        $award = new self(
             id: new LotteryAwardId(Uuid::uuid7()),
             lotteryId: $event->lotteryId,
             status: AwardStatus::PLAYED_OUT,
@@ -49,6 +57,15 @@ class LotteryAward
             updatedAt: null,
             deletedAt: null
         );
+
+        $award->recordEvent(domainEvent: new AwardCreated(
+            aggregateId: $award->getId()->getIdString(),
+            lotteryId: $award->getLotteryId(),
+            awardStatus: $award->getStatus()->value,
+            winSum: $award->getWinSum()
+        ));
+
+        return $award;
     }
 
     public function getId(): LotteryAwardId

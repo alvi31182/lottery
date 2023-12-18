@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Lottery\Application\UseCase;
 
 use App\Lottery\Application\Dto\LotteryListInWaiting;
-use App\Lottery\Application\Event\EventData\LotteryStatusUpdated;
+use App\Lottery\Application\Events\EventData\LotteryStatusUpdated;
 use App\Lottery\Application\Exception\LotteryUpdateException;
 use App\Lottery\Application\UseCase\LotteryUpdateStatusToStartedHandler;
 use App\Lottery\Model\WriteLotteryStorage;
