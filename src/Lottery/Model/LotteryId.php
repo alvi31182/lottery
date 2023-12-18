@@ -38,6 +38,7 @@ class LotteryId
 
     public function equals(self $other): bool
     {
+        //ToDo to refactor
         return Uuid::fromString($this->getId()->toString()) == $other;
     }
 }

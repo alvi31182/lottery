@@ -5,42 +5,49 @@ declare(strict_types=1);
 namespace Lottery\Application\Console\Command;
 
 use App\Lottery\Application\Console\Command\ProcessRunLottery;
-use App\Lottery\Application\Dto\LotteryListInWaiting;
-use App\Lottery\Application\UseCase\UpdateLotteryStatus;
+use App\Lottery\Application\Event\LotteryStatusUpdated;
 use App\Lottery\Model\ReadLotteryStorage;
 use PHPUnit\Framework\MockObject\Exception;
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Exception\ExceptionInterface;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\BufferedOutput;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class ProcessRunLotteryTest extends TestCase
+class ProcessRunLotteryTest extends KernelTestCase
 {
     /**
      * @throws Exception
+     * @throws ExceptionInterface
      */
     public function testRunSelectionWinner(): void
     {
-        $lotteryList = [
-            new LotteryListInWaiting('player1', 'game1'),
-            new LotteryListInWaiting('player2', 'game2'),
-        ];
+        $readLotteryStorageMock = $this->createMock(ReadLotteryStorage::class);
+        $eventDispatcherMock = $this->createMock(EventDispatcherInterface::class);
 
-        $readLotteryStorage = $this->createMock(ReadLotteryStorage::class);
-        $readLotteryStorage->expects($this->once())
+        $lotteryList = ['lottery1', 'lottery2'];
+        $readLotteryStorageMock
+            ->expects($this->once())
             ->method('getLotteryListByStatusInWaiting')
             ->willReturn($lotteryList);
 
-        $updateLotteryStatus = $this->createMock(UpdateLotteryStatus::class);
+        $eventDispatcherMock
+            ->expects($this->once())
+            ->method('dispatch')
+            ->with(
+                $this->isInstanceOf(LotteryStatusUpdated::class),
+                LotteryStatusUpdated::NAME
+            );
 
-        $application = new Application();
-        $application->add(new ProcessRunLottery($readLotteryStorage, $updateLotteryStatus));
+        $command = new ProcessRunLottery($readLotteryStorageMock, $eventDispatcherMock);
 
-        $command = $application->find('app:lottery_list');
-        $commandTester = new CommandTester($command);
+        $input = new ArrayInput([]);
+        $output = new BufferedOutput();
 
-        $commandTester->execute([]);
 
-        $output = $commandTester->getDisplay();
-        $this->assertStringContainsString('Winner selected', $output);
+        $statusCode = $command->run($input, $output);
+
+        $this->assertEquals(Command::SUCCESS, $statusCode);
     }
 }
