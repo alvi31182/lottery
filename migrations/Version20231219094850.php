@@ -7,10 +7,7 @@ namespace DoctrineMigrations;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
-final class Version20231218205456 extends AbstractMigration
+final class Version20231219094850 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -21,8 +18,8 @@ final class Version20231218205456 extends AbstractMigration
     {
         $this->addSql('CREATE TABLE Outbox (
                             id UUID NOT NULL, 
-                            eventName VARCHAR(255) NOT NULL, 
-                            eventData JSONB NOT NULL, 
+                            event_name VARCHAR(255) NOT NULL, 
+                            event_data JSONB NOT NULL, 
                             is_send BOOLEAN DEFAULT false NOT NULL, 
                             createdAt TIMESTAMP(0) WITH TIME ZONE NOT NULL, 
                             PRIMARY KEY(id))'

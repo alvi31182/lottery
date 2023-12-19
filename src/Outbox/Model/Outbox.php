@@ -26,9 +26,9 @@ class Outbox
         #[ORM\GeneratedValue(strategy: 'CUSTOM')]
         #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
         private UuidInterface $id,
-        #[ORM\Column(name: 'eventName', type: 'string', unique: false, nullable: false)]
+        #[ORM\Column(type: 'string', unique: false, nullable: false)]
         private string $eventName,
-        #[ORM\Column(name: 'eventData', type: 'jsonb', nullable: false)]
+        #[ORM\Column(type: 'jsonb', nullable: false)]
         private array $eventData,
         #[ORM\Column(type: 'boolean', nullable: false, options: ['default' => false])]
         private bool $isSend,
