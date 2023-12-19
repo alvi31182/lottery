@@ -6,6 +6,7 @@ namespace App\Core\Worker\Kafka;
 
 use App\Core\Infrastructure\Kafka\Consumer\KafkaConsumerService;
 use App\Lottery\Application\UseCase\LotteryCreateHandler;
+use Psr\Log\LoggerInterface;
 use RdKafka\Message;
 use React\EventLoop\LoopInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -14,7 +15,6 @@ use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use SplQueue;
-use Exception;
 use Throwable;
 
 #[AsCommand(
@@ -30,6 +30,7 @@ final class KafkaWorker extends Command
         private readonly KafkaConsumerService $consumer,
         private readonly LoopInterface $loop,
         private readonly LotteryCreateHandler $handler,
+        private readonly LoggerInterface $logger,
         string $name = null
     ) {
         $this->messageQueue = new SplQueue();
@@ -69,7 +70,12 @@ final class KafkaWorker extends Command
                 $this->logMessage("Timed out", $output);
                 break;
             default:
-                throw new Exception($message->errstr(), $message->err);
+                $this->logger->error(
+                    message: $message->errstr(),
+                    context: [
+                        'kafkaError' => $message->err,
+                    ]
+                );
         }
     }
 

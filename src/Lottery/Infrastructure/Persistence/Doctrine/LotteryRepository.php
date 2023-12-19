@@ -105,7 +105,7 @@ SQL;
 
         foreach ($results as $result) {
             $lotteryStartedDtoList[] = new LotteryListInStarted(
-                lotteryId: $result['player_id'],
+                lotteryId: $result['id'],
                 gameId: $result['game_id'],
                 playerId: $result['player_id'],
                 stake: $result['stake']
@@ -147,6 +147,7 @@ SQL;
             $connection->beginTransaction();
 
             $SQL = $this->buildUpdateQueryToStatusFinished();
+            $deleteSQL = $this->buildDeleteQueryToStatusNotWinner();
 
             $connection->executeStatement(
                 sql: $SQL,
@@ -154,6 +155,9 @@ SQL;
                     'lotteryId' => $lotteryId->getId()->toString(),
                 ]
             );
+
+            $connection->executeStatement($deleteSQL);
+
             $connection->commit();
         } catch (Exception $e) {
             $connection->rollBack();
@@ -165,8 +169,16 @@ SQL;
     {
         return <<<SQL
             UPDATE lottery
-                SET status = 'finished' 
-            WHERE id NOT IN (:lotteryId) AND status NOT IN ('in_waiting')
+                SET status = 'winner' 
+            WHERE id IN (:lotteryId) AND status NOT IN ('in_waiting')
+                
+SQL;
+    }
+
+    private function buildDeleteQueryToStatusNotWinner(): string
+    {
+        return <<<SQL
+        DELETE FROM lottery WHERE status != 'winner'
 SQL;
     }
 

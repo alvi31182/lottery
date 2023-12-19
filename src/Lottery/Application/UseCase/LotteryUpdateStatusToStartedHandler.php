@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Lottery\Application\UseCase;
 
 use App\Lottery\Application\Command\UpdateLotteryToStartCommand;
-use App\Lottery\Application\Events\EventData\LotteryStatusUpdated;
 use App\Lottery\Application\Exception\LotteryUpdateException;
 use App\Lottery\Model\ReadLotteryStorage;
 use App\Lottery\Model\WriteLotteryStorage;
@@ -35,14 +34,14 @@ final readonly class LotteryUpdateStatusToStartedHandler
                 lotteryListWaiting: $command->lotteryList
             );
 
-            $lotteryListInStarted = $this->readLotteryStorage->getLotteryListInStarted();
-
-            $this->eventDispatcher->dispatch(
-                event: new LotteryStatusUpdated(
-                    lotteryListStared: $lotteryListInStarted
-                ),
-                eventName: LotteryStatusUpdated::NAME
-            );
+//            $lotteryListInStarted = $this->readLotteryStorage->getLotteryListInStarted();
+//
+//            $this->eventDispatcher->dispatch(
+//                event: new LotteryStatusUpdated(
+//                    lotteryListStared: $lotteryListInStarted
+//                ),
+//                eventName: LotteryStatusUpdated::NAME
+//            );
         } catch (Throwable $exception) {
             $this->handleLotteryUpdateException(exception: $exception);
         }

@@ -59,7 +59,7 @@ final class ProcessRunDetermineWinner extends Command
             );
 
             throw new LotteryUpdateException(
-                'Error run determine winner'
+                $exception->getMessage()
             );
         }
 
