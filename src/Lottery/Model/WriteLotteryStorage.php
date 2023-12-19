@@ -14,4 +14,6 @@ interface WriteLotteryStorage
      * @param array<LotteryListInWaiting> $lotteryListWaiting
      */
     public function updateLotteryStatusToStarted(array $lotteryListWaiting): void;
+
+    public function updateLotteryStatusToFinished(LotteryId $lotteryId): void;
 }

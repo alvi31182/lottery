@@ -7,6 +7,7 @@ namespace App\Lottery\Infrastructure\Persistence\Doctrine;
 use App\Lottery\Application\Dto\LotteryListInStarted;
 use App\Lottery\Application\Dto\LotteryListInWaiting;
 use App\Lottery\Model\Lottery;
+use App\Lottery\Model\LotteryId;
 use App\Lottery\Model\ReadLotteryStorage;
 use App\Lottery\Model\WriteLotteryStorage;
 use Doctrine\DBAL\Exception;
@@ -136,6 +137,37 @@ SQL;
             $connection->rollBack();
             $this->logger->error($e->getMessage());
         }
+    }
+
+    public function updateLotteryStatusToFinished(LotteryId $lotteryId): void
+    {
+        $connection = $this->getEntityManager()->getConnection();
+
+        try {
+            $connection->beginTransaction();
+
+            $SQL = $this->buildUpdateQueryToStatusFinished();
+
+            $connection->executeStatement(
+                sql: $SQL,
+                params: [
+                    'lotteryId' => $lotteryId->getId()->toString(),
+                ]
+            );
+            $connection->commit();
+        } catch (Exception $e) {
+            $connection->rollBack();
+            $this->logger->error($e->getMessage());
+        }
+    }
+
+    private function buildUpdateQueryToStatusFinished(): string
+    {
+        return <<<SQL
+            UPDATE lottery
+                SET status = 'finished' 
+            WHERE id NOT IN (:lotteryId) AND status NOT IN ('in_waiting')
+SQL;
     }
 
     /**
