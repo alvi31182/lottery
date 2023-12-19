@@ -6,19 +6,15 @@ namespace App\Lottery\Application\UseCase;
 
 use App\Lottery\Application\Command\UpdateLotteryToStartCommand;
 use App\Lottery\Application\Exception\LotteryUpdateException;
-use App\Lottery\Model\ReadLotteryStorage;
 use App\Lottery\Model\WriteLotteryStorage;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Throwable;
 
 final readonly class LotteryUpdateStatusToStartedHandler
 {
     public function __construct(
         private WriteLotteryStorage $writeLotteryStorage,
-        private ReadLotteryStorage $readLotteryStorage,
         private LoggerInterface $logger,
-        private EventDispatcherInterface $eventDispatcher
     ) {
     }
 
@@ -33,15 +29,6 @@ final readonly class LotteryUpdateStatusToStartedHandler
             $this->writeLotteryStorage->updateLotteryStatusToStarted(
                 lotteryListWaiting: $command->lotteryList
             );
-
-//            $lotteryListInStarted = $this->readLotteryStorage->getLotteryListInStarted();
-//
-//            $this->eventDispatcher->dispatch(
-//                event: new LotteryStatusUpdated(
-//                    lotteryListStared: $lotteryListInStarted
-//                ),
-//                eventName: LotteryStatusUpdated::NAME
-//            );
         } catch (Throwable $exception) {
             $this->handleLotteryUpdateException(exception: $exception);
         }
