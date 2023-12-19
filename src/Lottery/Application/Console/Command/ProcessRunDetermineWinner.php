@@ -66,6 +66,11 @@ final class ProcessRunDetermineWinner extends Command
         return Command::SUCCESS;
     }
 
+    /**
+     * @param array<LotteryListInStarted> $lotteryListForStarted
+     *
+     * @throws LotteryUpdateException
+     */
     private function handleLotterySelection(array $lotteryListForStarted): void
     {
         [$prize, $winner] = $this->runSelectionWinner(lotteryListForStarted: $lotteryListForStarted);
@@ -80,6 +85,9 @@ final class ProcessRunDetermineWinner extends Command
         );
     }
 
+    /**
+     * @throws LotteryUpdateException
+     */
     private function updateToFinished(LotteryListInStarted $lotteryListInStarted): void
     {
         $this->finishedStatusUpdateHandler->handle(
