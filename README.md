@@ -11,8 +11,12 @@ Other services, typically **`PlayerService`**, read this topic to inform the pla
 **Database structure**
 ![db-gram.png](public/ReadmeImg/db-gram.png)
 
+**How the Process Works:***
 
-The process is structured as follows:
-1. [KafkaWorker](src%2FCore%2FWorker%2FKafka%2FKafkaWorker.php) initiates a polling loop in Kafka, adding the consumer_group_id - "lottery_service_consumer_group."
-2. Let's imagine that we have a Game Service that sends data to a Kafka topic subscribed to by the Lottery Service.
-3. The Lottery Service retrieves data from the topic, processes it, and populates the lottery table.
+The [KafkaWorker](src%2FCore%2FWorker%2FKafka%2FKafkaWorker.php) initiates a polling loop in Kafka, adding the consumer_group_id **"lottery_service_consumer_group"** Since there can be many participants in the lottery, and consequently, there can be more than a million messages in the **"player.v1.staked"** topic, it is necessary to store these messages in a SplQueue data structure, specifying the desired size for retrieving data from the Kafka topic.
+
+Let's imagine that we have a **Game Service** that sends data to a Kafka topic subscribed to by the Lottery Service. The **Lottery Service** receives data from the topic, processes it, and populates the **"lottery"** table, specifying the status as **"in_waiting"**
+
+The process of a console command is initiated using the Symfony console command **"bin/console app:get_lottery_list"** to retrieve a list of new lotteries with the status **"in_waiting"**
+
+After obtaining the list of lottery participants, a command is sent to update the status to **"started"** using the **"[UpdateLotteryToStartCommand](src%2FLottery%2FApplication%2FCommand%2FUpdateLotteryToStartCommand.php)"** In the **"[LotteryUpdateStatusToStartedHandler.php](src%2FLottery%2FApplication%2FUseCase%2FLotteryUpdateStatusToStartedHandler.php)"** this handler updates the Lottery status and selects the list of participants with the status **"started"**.
