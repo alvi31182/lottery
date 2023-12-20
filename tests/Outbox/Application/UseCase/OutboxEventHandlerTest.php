@@ -10,6 +10,7 @@ use App\Outbox\Model\Outbox;
 use App\Outbox\Model\WriteOutboxStorage;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 
 class OutboxEventHandlerTest extends TestCase
@@ -17,8 +18,9 @@ class OutboxEventHandlerTest extends TestCase
     public function testAddToOutbox(): void
     {
         $outboxStorageMock = $this->createMock(WriteOutboxStorage::class);
+        $logger = $this->createMock(LoggerInterface::class);
 
-        $outboxHandler = new OutboxEventHandler($outboxStorageMock);
+        $outboxHandler = new OutboxEventHandler($outboxStorageMock, $logger);
 
         $awardCreatedEvent = new AwardCreated(
             aggregateId: Uuid::uuid7()->toString(),

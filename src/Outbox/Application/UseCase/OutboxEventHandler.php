@@ -6,15 +6,19 @@ namespace App\Outbox\Application\UseCase;
 
 use App\Lottery\Infrastructure\Outbox\OutboxInterface;
 use App\Lottery\Model\Events\AwardCreated;
+use App\Outbox\Application\OutboxCreateException;
 use App\Outbox\Model\Outbox;
 use App\Outbox\Model\WriteOutboxStorage;
 use Exception;
 use DateTimeImmutable;
+use Psr\Log\LoggerInterface;
+use Throwable;
 
 final readonly class OutboxEventHandler implements OutboxInterface
 {
     public function __construct(
         private WriteOutboxStorage $outboxStorage,
+        private LoggerInterface $logger
     ) {
     }
 
@@ -23,8 +27,17 @@ final readonly class OutboxEventHandler implements OutboxInterface
      */
     public function addToOutbox(AwardCreated $domainEvent): void
     {
-        $outbox = Outbox::create($domainEvent, $this->getEventData($domainEvent));
-        $this->outboxStorage->createOutbox(outbox: $outbox);
+        try {
+            $outbox = Outbox::create($domainEvent, $this->getEventData($domainEvent));
+            $this->outboxStorage->createOutbox(outbox: $outbox);
+        } catch (Throwable $exception) {
+            $this->logger->error(
+                message: 'Error outbox create ' . $exception->getMessage()
+            );
+            throw new OutboxCreateException(
+                sprintf('Error outbox create %s ', $exception->getMessage())
+            );
+        }
     }
 
     /**

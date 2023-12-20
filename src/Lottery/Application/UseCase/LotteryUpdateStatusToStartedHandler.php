@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Lottery\Application\UseCase;
 
-use App\Lottery\Application\Events\EventData\LotteryStatusUpdated;
+use App\Lottery\Application\Command\UpdateLotteryToStartCommand;
 use App\Lottery\Application\Exception\LotteryUpdateException;
 use App\Lottery\Model\WriteLotteryStorage;
 use Psr\Log\LoggerInterface;
@@ -14,20 +14,20 @@ final readonly class LotteryUpdateStatusToStartedHandler
 {
     public function __construct(
         private WriteLotteryStorage $writeLotteryStorage,
-        private LoggerInterface $logger
+        private LoggerInterface $logger,
     ) {
     }
 
     /**
-     * @param LotteryStatusUpdated $lotteryStatusUpdatedEvent
+     * @param UpdateLotteryToStartCommand $command
      *
      * @throws LotteryUpdateException
      */
-    public function handle(LotteryStatusUpdated $lotteryStatusUpdatedEvent): void
+    public function handle(UpdateLotteryToStartCommand $command): void
     {
         try {
             $this->writeLotteryStorage->updateLotteryStatusToStarted(
-                lotteryListWaiting: $lotteryStatusUpdatedEvent->lotteryList
+                lotteryListWaiting: $command->lotteryList
             );
         } catch (Throwable $exception) {
             $this->handleLotteryUpdateException(exception: $exception);

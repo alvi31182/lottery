@@ -4,24 +4,24 @@ declare(strict_types=1);
 
 namespace App\Lottery\Application\Console\Command;
 
-use App\Lottery\Application\Events\EventData\LotteryStatusUpdated;
+use App\Lottery\Application\Command\UpdateLotteryToStartCommand;
+use App\Lottery\Application\UseCase\LotteryUpdateStatusToStartedHandler;
 use App\Lottery\Model\ReadLotteryStorage;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 #[AsCommand(
-    name: 'app:get_lottery_list',
-    description: 'Run process consume message from Kafka topic, after as consumed message and stored in DB.',
+    name: 'app:start_lottery',
+    description: 'Start lottery after consume message from Kafka and storage in database lottery table.',
     hidden: false
 )]
 final class ProcessStartLottery extends Command
 {
     public function __construct(
         private readonly ReadLotteryStorage $readLotteryStorage,
-        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly LotteryUpdateStatusToStartedHandler $handler,
         string $name = null
     ) {
         parent::__construct($name);
@@ -31,11 +31,10 @@ final class ProcessStartLottery extends Command
     {
         $lotteryList = $this->readLotteryStorage->getLotteryListByStatusInWaiting();
 
-        $this->eventDispatcher->dispatch(
-            event: new LotteryStatusUpdated(
+        $this->handler->handle(
+            command: new UpdateLotteryToStartCommand(
                 lotteryList: $lotteryList
-            ),
-            eventName: LotteryStatusUpdated::NAME
+            )
         );
 
         return Command::SUCCESS;

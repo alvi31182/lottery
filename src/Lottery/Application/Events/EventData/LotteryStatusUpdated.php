@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace App\Lottery\Application\Events\EventData;
 
-use App\Lottery\Application\Dto\LotteryListInWaiting;
+use App\Lottery\Application\Dto\LotteryListInStarted;
 
 final class LotteryStatusUpdated
 {
     public const NAME = 'lottery_status.updated';
 
     /**
-     * @param array<LotteryListInWaiting> $lotteryList
+     * @param array<LotteryListInStarted> $lotteryListStared
      */
     public function __construct(
-        public readonly array $lotteryList
+        public readonly array $lotteryListStared
     ) {
     }
 }

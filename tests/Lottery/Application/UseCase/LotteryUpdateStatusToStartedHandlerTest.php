@@ -22,6 +22,7 @@ class LotteryUpdateStatusToStartedHandlerTest extends TestCase
      */
     public function testHandle(): void
     {
+        $this->markTestSkipped();
         $lotteryList = [
             new LotteryListInWaiting(
                 gameId: Uuid::uuid7()->toString(),

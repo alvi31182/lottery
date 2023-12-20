@@ -7,6 +7,7 @@ namespace App\Lottery\Infrastructure\Persistence\Doctrine;
 use App\Lottery\Application\Dto\LotteryListInStarted;
 use App\Lottery\Application\Dto\LotteryListInWaiting;
 use App\Lottery\Model\Lottery;
+use App\Lottery\Model\LotteryId;
 use App\Lottery\Model\ReadLotteryStorage;
 use App\Lottery\Model\WriteLotteryStorage;
 use Doctrine\DBAL\Exception;
@@ -104,7 +105,7 @@ SQL;
 
         foreach ($results as $result) {
             $lotteryStartedDtoList[] = new LotteryListInStarted(
-                lotteryId: $result['player_id'],
+                lotteryId: $result['id'],
                 gameId: $result['game_id'],
                 playerId: $result['player_id'],
                 stake: $result['stake']
@@ -136,6 +137,49 @@ SQL;
             $connection->rollBack();
             $this->logger->error($e->getMessage());
         }
+    }
+
+    public function updateLotteryStatusToFinished(LotteryId $lotteryId): void
+    {
+        $connection = $this->getEntityManager()->getConnection();
+
+        try {
+            $connection->beginTransaction();
+
+            $SQL = $this->buildUpdateQueryToStatusFinished();
+            $deleteSQL = $this->buildDeleteQueryToStatusNotWinner();
+
+            $connection->executeStatement(
+                sql: $SQL,
+                params: [
+                    'lotteryId' => $lotteryId->getId()->toString(),
+                ]
+            );
+
+            $connection->executeStatement($deleteSQL);
+
+            $connection->commit();
+        } catch (Exception $e) {
+            $connection->rollBack();
+            $this->logger->error($e->getMessage());
+        }
+    }
+
+    private function buildUpdateQueryToStatusFinished(): string
+    {
+        return <<<SQL
+            UPDATE lottery
+                SET status = 'winner' 
+            WHERE id IN (:lotteryId) AND status NOT IN ('in_waiting')
+                
+SQL;
+    }
+
+    private function buildDeleteQueryToStatusNotWinner(): string
+    {
+        return <<<SQL
+        DELETE FROM lottery WHERE status != 'winner'
+SQL;
     }
 
     /**
