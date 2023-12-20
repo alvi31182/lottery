@@ -22,7 +22,7 @@ use Throwable;
 )]
 final class KafkaWorker extends Command
 {
-    private const BATCH_SIZE = 10;
+    private const BATCH_SIZE = 1;
 
     private readonly SplQueue $messageQueue;
 
@@ -42,6 +42,11 @@ final class KafkaWorker extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $this->loop->addSignal(SIGINT, function (int $signal) use ($output): void {
+            $output->writeln('Worker stop from user from signal ' . $signal);
+            $this->stopWorker();
+        });
+
         $this->loop->addPeriodicTimer(interval: 1, callback: function () use ($output) {
             $this->consumeAndProcessMessages($output);
         });
@@ -81,34 +86,24 @@ final class KafkaWorker extends Command
 
     private function enqueueMessage(Message $message): void
     {
-
-        $increment = $this->incrementCounter();
-
-        $this->messageQueue->enqueue(
-            new KafkaQueuedMessage($message, $increment)
-        );
+        $this->messageQueue->enqueue($message);
 
         if ($this->messageQueue->count() >= self::BATCH_SIZE) {
-            $this->processBatchSize();
+            $this->processHandleMessage();
         }
     }
 
-    private function incrementCounter(): int
-    {
-        static $increment = 0;
-        ++$increment;
-
-        return $increment;
-    }
-
-    private function processBatchSize(): void
+    private function processHandleMessage(): void
     {
         while (!$this->messageQueue->isEmpty()) {
-            $queuedMessage = $this->messageQueue->dequeue();
-            $message = $queuedMessage->getMessage();
-
+            $message = $this->messageQueue->dequeue();
             $this->handler->handle(message: $message->payload);
         }
+    }
+
+    private function stopWorker(): void
+    {
+        $this->loop->stop();
     }
 
     private function logMessage(string $message, OutputInterface $output): void
