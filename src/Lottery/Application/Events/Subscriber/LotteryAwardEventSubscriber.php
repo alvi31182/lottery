@@ -6,6 +6,7 @@ namespace App\Lottery\Application\Events\Subscriber;
 
 use App\Lottery\Application\Events\EventData\LotteryDeterminedWinner;
 use App\Lottery\Application\UseCase\LotteryAwardCreateHandler;
+use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 final class LotteryAwardEventSubscriber implements EventSubscriberInterface
@@ -34,6 +35,9 @@ final class LotteryAwardEventSubscriber implements EventSubscriberInterface
         ];
     }
 
+    /**
+     * @throws Exception
+     */
     public function createWinner(LotteryDeterminedWinner $eventWinner): void
     {
         $this->handler->handle(eventWinner: $eventWinner);
