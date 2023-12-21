@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Lottery\Infrastructure\Outbox;
+namespace App\Lottery\Shared\Outbox;
 
 use App\Lottery\Model\Events\AwardCreated;
 

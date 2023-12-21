@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Outbox\Application\UseCase;
 
-use App\Lottery\Infrastructure\Outbox\OutboxInterface;
 use App\Lottery\Model\Events\AwardCreated;
+use App\Lottery\Shared\Outbox\OutboxInterface;
 use App\Outbox\Application\OutboxCreateException;
 use App\Outbox\Model\Outbox;
 use App\Outbox\Model\WriteOutboxStorage;
-use Exception;
 use DateTimeImmutable;
+use Exception;
 use Psr\Log\LoggerInterface;
 use Throwable;
 

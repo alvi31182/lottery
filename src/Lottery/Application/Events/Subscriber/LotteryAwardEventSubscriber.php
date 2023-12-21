@@ -9,7 +9,7 @@ use App\Lottery\Application\UseCase\LotteryAwardCreateHandler;
 use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-final class LotteryAwardEventSubscriber implements EventSubscriberInterface
+final readonly class LotteryAwardEventSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private LotteryAwardCreateHandler $handler
