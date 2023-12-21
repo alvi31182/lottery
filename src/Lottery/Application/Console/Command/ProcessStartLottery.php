@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
     name: 'app:start_lottery',
-    description: 'Start lottery after consume message from Kafka and storage in database lottery table.',
+    description: 'Start lottery after consume.sh message from Kafka and storage in database lottery table.',
     hidden: false
 )]
 final class ProcessStartLottery extends Command

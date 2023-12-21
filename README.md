@@ -2,7 +2,21 @@
 
 ![dia.png](public%2FReadmeImg%2Fdia.png)
 
-<ul style="background-color: rgba(196,208,231,0.5)">
+<ul>
+<li>
+<h5>Изоляция ресурсов:</h5>
+</li>
+<li>Каждый контейнер будет работать в своем собственном окружении, что обеспечивает изоляцию ресурсов. Если одна из команд становится нагруженной, это не влияет на другие.</li>
+<li>
+<h5>
+Гибкость настройки:
+</h5>
+</li>
+<li>Разные команды могут требовать разные зависимости, настройки или версии PHP. Использование отдельных контейнеров обеспечивает гибкость настройки для каждой команды.</li>
+</ul>
+
+<div style="border-top: #2e3136; border-style: solid; margin: 2px"></div>
+<ul>
 <li>This is one of the services that involves a lottery draw when a player places a bet.</li>
 <li>For example, a player registers in the system, makes a deposit, then selects a game and places a sports bet.</li>
 <li>Data for the Lottery model is sourced from another service, such as a gaming service. </li>
