@@ -4,15 +4,15 @@
 
 <ul>
 <li>
-<h5>Изоляция ресурсов:</h5>
+<h5>Resource isolation:</h5>
 </li>
-<li>Каждый контейнер будет работать в своем собственном окружении, что обеспечивает изоляцию ресурсов. Если одна из команд становится нагруженной, это не влияет на другие.</li>
+<li>Each container will run in its own environment, which ensures resource isolation. If one of the teams becomes overloaded, it does not affect the others.</li>
 <li>
 <h5>
-Гибкость настройки:
+Flexibility of configuration:
 </h5>
 </li>
-<li>Разные команды могут требовать разные зависимости, настройки или версии PHP. Использование отдельных контейнеров обеспечивает гибкость настройки для каждой команды.</li>
+<li>Different commands may require different dependencies, settings, or PHP versions. Using separate containers provides customization flexibility for each team.</li>
 </ul>
 
 <div style="border-top: #2e3136; border-style: solid; margin: 2px"></div>
