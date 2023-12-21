@@ -1,15 +1,23 @@
-# lottery Service
+<h1>Lottery Service</h1>
 
 ![dia.png](public%2FReadmeImg%2Fdia.png)
 
-This is one of the services that involves a lottery draw when a player places a bet. For example, a player registers in the system, makes a deposit, then selects a game and places a sports bet.
-Data for the Lottery model is sourced from another service, such as a gaming service. In the gaming service, a user places a bet on a game, and as soon as the bet is made, the gaming service sends events of the player's actions to the Kafka broker. The lottery service subscribes to the **`"player.v1.staked"`** topic with a message type of **`"player.stakeCreated"`**. After the lottery service receives the message data, it creates a lottery for the respective player based on their ID and the ID of the game in which they placed the bet.
-After a specific number of players who placed the initial bet have been gathered, the lottery drawing begins, and the status is updated from "in_waiting" to "started." The winner is selected, and once the winner is determined, the status in the lottery table is updated from "started" to "finished," and the winner's status set to "winner."
-After determining the winner, the data **`'lottery_id'`** and **`'win_sum'`** are recorded in the **`lottery_award`** table, and the status 'played_out' is added. Once **`LotteryAward`** is created, the domain event **`AwardCreated`** is triggered. The event is sent to a subscriber in the Outbox, and the event data is recorded in the **`Outbox`** table. The producer (run by a daemon) sends the data from the Outbox table to Kafka, creating the topic 'lottery.v1.award' with the messageType **`lotteryAwardCreated`**. 
-Other services, typically **`PlayerService`**, read this topic to inform the player that they have won a prize.
+<ul style="background-color: rgba(196,208,231,0.5)">
+<li>This is one of the services that involves a lottery draw when a player places a bet.</li>
+<li>For example, a player registers in the system, makes a deposit, then selects a game and places a sports bet.</li>
+<li>Data for the Lottery model is sourced from another service, such as a gaming service. </li>
+<li>In the gaming service, a user places a bet on a game, and as soon as the bet is made, the gaming service sends events of the player's actions to the Kafka broker. </li>
+<li>The lottery service subscribes to the <b>"player.v1.staked"</b> topic with a message type of <b>"player.stakeCreated"`</b>. After the lottery service receives the message data, it creates a lottery for the respective player based on their ID and the ID of the game in which they placed the bet.</li>
+<li>After a specific number of players who placed the initial bet have been gathered, the lottery drawing begins, and the status is updated from "in_waiting" to "started." </li>
+<li>The winner is selected, and once the winner is determined, the status in the lottery table is updated from "started" to "finished," and the winner's status set to "winner." </li>
+<li>After determining the winner, the data <b>'lottery_id'</b> and <b>'win_sum'</b> are recorded in the <b>`lottery_award`</b> table, and the status <b>'played_out'</b> is added. Once <b>`LotteryAward`</b> is created, the domain event <b>`AwardCreated`</b> is triggered. The event is sent to a subscriber in the Outbox, and the event data is recorded in the <b>`Outbox`</b> table. </li>
+<li>The producer (run by a daemon) sends the data from the Outbox table to Kafka, creating the topic <b>'lottery.v1.award'</b> with the messageType <b>`lotteryAwardCreated`</b>.  </li>
+<li>Other services, typically <b>`PlayerService`</b>, read this topic to inform the player that they have won a prize.</li>
+</ul>
+
 
 **Database structure**
-![db-gram.png](public/ReadmeImg/db-gram.png)
+<img src="public/ReadmeImg/db-gram.png" alt="image" style="width:500px;height:auto;">
 
 **How the Process Works:***
 
