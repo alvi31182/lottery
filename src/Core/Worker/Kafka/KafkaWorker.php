@@ -22,8 +22,6 @@ use Throwable;
 )]
 final class KafkaWorker extends Command
 {
-    private const BATCH_SIZE = 1;
-
     private readonly SplQueue $messageQueue;
 
     public function __construct(
@@ -88,9 +86,7 @@ final class KafkaWorker extends Command
     {
         $this->messageQueue->enqueue($message);
 
-        if ($this->messageQueue->count() >= self::BATCH_SIZE) {
-            $this->processHandleMessage();
-        }
+        $this->processHandleMessage();
     }
 
     private function processHandleMessage(): void
