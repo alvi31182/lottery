@@ -1,8 +1,4 @@
 services:
-    _defaults:
-        autowire: true
-        autoconfigure: true
-
     App\Outbox\Application\UseCase\OutboxEventHandler:
         arguments:
           [ '@App\Outbox\Model\WriteOutboxStorage' ]

@@ -46,17 +46,19 @@ final class PlayerCreateStakeToGame extends AbstractController
             ],
         ];
 
-        $payload = json_encode($data, JSON_THROW_ON_ERROR | JSON_FORCE_OBJECT);
+        for ($i = 0; $i < 3000; $i++) {
+            $payload = json_encode($data, JSON_THROW_ON_ERROR | JSON_FORCE_OBJECT);
 
-        $topic = $rk->newTopic(self::TOPIC_PREFIX . self::TOPIC_NAME);
-        $topic->producev(
-            partition: RD_KAFKA_PARTITION_UA,
-            msgflags: 0,
-            payload: $payload,
-            headers: ['uuid' => Uuid::uuid7()->toString()],
-        );
+            $topic = $rk->newTopic(self::TOPIC_PREFIX . self::TOPIC_NAME);
+            $topic->producev(
+                partition: RD_KAFKA_PARTITION_UA,
+                msgflags: 0,
+                payload: $payload,
+                headers: ['uuid' => Uuid::uuid7()->toString()],
+            );
 
-        $rk->poll(2000);
+            $rk->poll(2000);
+        }
 
         return new JsonResponse([
             'success' => 'topic created',
