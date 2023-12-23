@@ -46,7 +46,7 @@ final readonly class LotteryCreateHandler
 
     private function parseMessageAsync(Deferred $deferred, string $message): PromiseInterface
     {
-        $this->loop->addTimer(0, function ($timer) use ($deferred, $message) {
+        $this->loop->addTimer(0, function () use ($deferred, $message) {
             try {
                 $messageData = json_decode($message, true, JSON_THROW_ON_ERROR);
                 $deferred->resolve($messageData);
@@ -59,6 +59,17 @@ final readonly class LotteryCreateHandler
         return $deferred->promise();
     }
 
+    /**
+     * @param array{
+     *     message: array{
+     *      eventType: string
+     *    },
+     *     game: array{
+     *      playerId: string,
+     *      gameId: string,
+     *      stake: string
+     * }} $messageData
+     */
     private function createLotteryAsync(Deferred $deferred, array $messageData): PromiseInterface
     {
         $this->loop->addTimer(0, function () use ($deferred, $messageData) {
