@@ -50,7 +50,6 @@ final readonly class LotteryCreateHandler
             try {
                 $messageData = json_decode($message, true, JSON_THROW_ON_ERROR);
                 $deferred->resolve($messageData);
-                unset($messageData);
             } catch (Throwable $exception) {
                 $deferred->reject($exception);
             }
@@ -83,7 +82,6 @@ final readonly class LotteryCreateHandler
                 );
                 $this->writeLotteryStorage->createLottery($lottery);
                 $deferred->resolve($lottery);
-                unset($lottery);
             } catch (Throwable $exception) {
                 $deferred->reject($exception);
             }
