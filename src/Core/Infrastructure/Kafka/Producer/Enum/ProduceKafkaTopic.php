@@ -6,6 +6,5 @@ namespace App\Core\Infrastructure\Kafka\Producer\Enum;
 
 enum ProduceKafkaTopic: string
 {
-    case LOTTERY_STARTED = 'lottery.v1.started';
-    case LOTTERY_FINISHED = 'lottery.v1.finished';
+    case LOTTERY_AWARD = 'lottery.v1.award';
 }

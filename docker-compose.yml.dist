@@ -1,6 +1,40 @@
 version: '3.3'
 
 services:
+  php_cli:
+    container_name: lottery_php_cli
+    build:
+      context: .
+      dockerfile: ./docker/php-cli/Dockerfile
+    volumes:
+      - .:/var/www/lottery:delegated
+    ports:
+      - "9006:9006"
+    depends_on:
+      - db
+      - php
+    networks:
+      - lottery
+      - bridge
+    tty: true
+
+  php_cli_two:
+    container_name: lottery_cli_two
+    build:
+      context: .
+      dockerfile: ./docker/php-cli-two/Dockerfile
+    volumes:
+      - .:/var/www/lottery:delegated
+    ports:
+      - "9007:9007"
+    depends_on:
+      - db
+      - php
+    networks:
+      - lottery
+      - bridge
+    tty: true
+
   php:
     container_name: lottery_php
     build:

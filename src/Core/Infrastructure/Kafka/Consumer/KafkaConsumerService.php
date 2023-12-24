@@ -12,7 +12,7 @@ use RdKafka\TopicPartition;
 use Exception;
 use Throwable;
 
-final class KafkaConsumerService extends AbstractKafkaConsumer implements KafkaMessageConsumer
+final class KafkaConsumerService extends AbstractKafkaConsumer
 {
     /**
      * @psalm-suppress UndefinedConstant
@@ -103,23 +103,31 @@ final class KafkaConsumerService extends AbstractKafkaConsumer implements KafkaM
     }
 
     /**
-     * @throws \Exception
-     * @throws \Throwable
+     * @return Message
+     * @throws Throwable
      */
     public function consumeFromKafka(): Message
     {
         try {
             $consumer = $this->kafkaConsumer();
             $consumer->subscribe(topics: $this->subscribeToTopics());
-            $message = $consumer->consume(2_000);
+            $message = $consumer->consume(timeout_ms: 2_000);
             $this->commitMessage($message, $consumer);
 
             return $message;
         } catch (Throwable $exception) {
-            $this->logger->error(
-                message: "Exception in Kafka consumer: {$exception->getMessage()}"
-            );
-            throw $exception;
+            $this->handleException(exception: $exception);
         }
+    }
+
+    /**
+     * @throws Throwable
+     */
+    private function handleException(Throwable $exception): void
+    {
+        $this->logger->error(
+            message: "Exception in Kafka consumer: {$exception->getMessage()}"
+        );
+        throw $exception;
     }
 }

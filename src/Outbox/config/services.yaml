@@ -5,7 +5,14 @@ services:
 
     App\Outbox\Application\UseCase\OutboxEventHandler:
         arguments:
-          [ '@App\Outbox\Model\WriteOutboxStorage' ]
+            [ '@App\Outbox\Model\WriteOutboxStorage' ]
+
+    App\Outbox\Application\UseCase\OutboxSchedulerMessageHandler:
+        arguments:
+            [ '@App\Outbox\Model\ReadOutboxStorage']
 
     App\Outbox\Model\WriteOutboxStorage:
+        class: App\Outbox\Infrastructure\Persistence\Doctrine\OutboxRepository
+
+    App\Outbox\Model\ReadOutboxStorage:
         class: App\Outbox\Infrastructure\Persistence\Doctrine\OutboxRepository

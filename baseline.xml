@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="5.18.0@b113f3ed0259fd6e212d87c3df80eec95a6abf19">
+  <file src="src/Core/Infrastructure/Kafka/Consumer/KafkaConsumerService.php">
+    <InvalidReturnType>
+      <code>Message</code>
+    </InvalidReturnType>
+    <PossiblyNullIterator>
+      <code>$partitions</code>
+      <code>$partitions</code>
+    </PossiblyNullIterator>
+  </file>
+  <file src="src/Core/Infrastructure/Kafka/Producer/AbstractKafkaProducer.php">
+    <InvalidThrow>
+      <code>
+        $exception
+      </code>
+    </InvalidThrow>
+    <UndefinedConstant>
+      <code>RD_KAFKA_PARTITION_UA</code>
+      <code>RD_KAFKA_RESP_ERR_NO_ERROR</code>
+    </UndefinedConstant>
+  </file>
+  <file src="src/Lottery/Infrastructure/Persistence/Doctrine/LotteryRepository.php">
+    <ImplementedReturnTypeMismatch>
+      <code>Lottery|null</code>
+      <code>Lottery|null</code>
+    </ImplementedReturnTypeMismatch>
+  </file>
+  <file src="src/Lottery/Model/LotteryAward.php">
+    <PropertyNotSetInConstructor>
+      <code>LotteryAward</code>
+      <code>LotteryAward</code>
+    </PropertyNotSetInConstructor>
+  </file>
+  <file src="src/Lottery/Shared/SharedDomainEvent.php">
+    <ArgumentTypeCoercion>
+      <code>$domainEvent</code>
+    </ArgumentTypeCoercion>
+  </file>
+</files>

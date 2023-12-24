@@ -13,6 +13,9 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 
+/**
+ * Don`t use tests mock never!
+ */
 class OutboxEventHandlerTest extends TestCase
 {
     public function testAddToOutbox(): void

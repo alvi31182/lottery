@@ -12,7 +12,7 @@ use RdKafka\Message;
 use RdKafka\TopicPartition;
 use Throwable;
 
-abstract class AbstractKafkaConsumer implements KafkaMessageConsumer
+abstract class AbstractKafkaConsumer
 {
     public function __construct(
         protected string $dns,

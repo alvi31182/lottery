@@ -9,6 +9,8 @@ use App\Lottery\Application\UseCase\LotteryCreateHandler;
 use Psr\Log\LoggerInterface;
 use RdKafka\Message;
 use React\EventLoop\LoopInterface;
+use React\Promise\Deferred;
+use React\Promise\PromiseInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
@@ -22,8 +24,6 @@ use Throwable;
 )]
 final class KafkaWorker extends Command
 {
-    private const BATCH_SIZE = 10;
-
     private readonly SplQueue $messageQueue;
 
     public function __construct(
@@ -42,7 +42,12 @@ final class KafkaWorker extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->loop->addPeriodicTimer(interval: 1, callback: function () use ($output) {
+        $this->loop->addSignal(SIGINT, function (int $signal) use ($output): void {
+            $output->writeln('Worker stop from user from signal ' . $signal);
+            $this->stopWorker();
+        });
+
+        $this->loop->addPeriodicTimer(interval: 0.00001, callback: function () use ($output) {
             $this->consumeAndProcessMessages($output);
         });
 
@@ -81,34 +86,42 @@ final class KafkaWorker extends Command
 
     private function enqueueMessage(Message $message): void
     {
+        $this->messageQueue->enqueue($message);
 
-        $increment = $this->incrementCounter();
-
-        $this->messageQueue->enqueue(
-            new KafkaQueuedMessage($message, $increment)
-        );
-
-        if ($this->messageQueue->count() >= self::BATCH_SIZE) {
-            $this->processBatchSize();
-        }
+        $this->processHandleMessage();
     }
 
-    private function incrementCounter(): int
-    {
-        static $increment = 0;
-        ++$increment;
-
-        return $increment;
-    }
-
-    private function processBatchSize(): void
+    private function processHandleMessage(): void
     {
         while (!$this->messageQueue->isEmpty()) {
-            $queuedMessage = $this->messageQueue->dequeue();
-            $message = $queuedMessage->getMessage();
+            $deferred = new Deferred();
 
-            $this->handler->handle(message: $message->payload);
+            $message = $this->messageQueue->dequeue();
+
+            $this->handleMessageAsync(payload: $message->payload, deferred: $deferred)
+                ->then(
+                    function (): void {
+                        $this->processHandleMessage();
+                    },
+                    function (Throwable $exception): void {
+                        $this->logger->error(
+                            message: $exception->getMessage()
+                        );
+                    }
+                );
         }
+
+        $this->outputMemoryUsage();
+    }
+
+    private function handleMessageAsync(string $payload, Deferred $deferred): PromiseInterface
+    {
+        return $this->handler->handleAsync(message: $payload, deferred: $deferred);
+    }
+
+    private function stopWorker(): void
+    {
+        $this->loop->stop();
     }
 
     private function logMessage(string $message, OutputInterface $output): void
@@ -118,5 +131,12 @@ final class KafkaWorker extends Command
         $output->getFormatter()->setStyle('green', $greenStyle);
 
         $output->writeln('<green>' . $message . '</green>');
+    }
+
+    private function outputMemoryUsage(): void
+    {
+        $peakMemoryUsage = memory_get_peak_usage(true);
+        $peakMemoryUsageMB = round($peakMemoryUsage / (1024 * 1024), 2);
+        $this->logger->info("Peak memory usage: $peakMemoryUsageMB MB");
     }
 }
