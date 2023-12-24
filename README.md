@@ -63,4 +63,5 @@ Let's imagine that we have a **Game Service** that sends data to a Kafka topic s
 **[OutboxSchedule](src%2FOutbox%2FApplication%2FConsole%2FScheduler%2FOutboxSchedule.php)** get records from the Outbox table and to produce messages.
 
 <hr>
+
 **[OutboxSchedulerMessageHandler](src%2FOutbox%2FApplication%2FUseCase%2FOutboxSchedulerMessageHandler.php)** Guarantees the delivery of messages without duplication.
