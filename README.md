@@ -4,6 +4,9 @@
 
 <ul>
 <li>
+<h5>Each command is handled by a separate container</h5>
+</li>
+<li>
 <h5>Resource isolation:</h5>
 </li>
 <li>Each container will run in its own environment, which ensures resource isolation. If one of the teams becomes overloaded, it does not affect the others.</li>
