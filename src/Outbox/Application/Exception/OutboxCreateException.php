@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Outbox\Application;
+namespace App\Outbox\Application\Exception;
 
 use Exception;
 use Throwable;

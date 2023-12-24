@@ -24,8 +24,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /var/www/lottery
 
-COPY /docker/php-cli-two/determine_winner.sh /usr/src/app/determine_winner.sh
+COPY /docker/php-outbox-cli/outbox.sh /usr/src/app/outbox.sh
 
-RUN chmod +x /usr/src/app/determine_winner.sh
+RUN chmod +x /usr/src/app/outbox.sh
 
-CMD ["/bin/bash", "-c", "/usr/src/app/determine_winner.sh"]
+CMD ["/bin/bash", "-c", "/usr/src/app/outbox.sh"]

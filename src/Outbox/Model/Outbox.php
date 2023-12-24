@@ -58,38 +58,10 @@ class Outbox
         );
     }
 
-    public function getId(): UuidInterface
+    public function statusIsSendToTrue(): self
     {
-        return $this->id;
-    }
+        $this->isSend = true;
 
-    public function getEventName(): string
-    {
-        return $this->eventName;
-    }
-
-    /**
-     * @return array{
-     *     message_event: string,
-     *     lottery: array{
-     *         lottery_id: string,
-     *         win_sum: string,
-     *         created_at: DateTimeImmutable
-     *     }
-     * }
-     */
-    public function getEventData(): array
-    {
-        return $this->eventData;
-    }
-
-    public function isSend(): bool
-    {
-        return $this->isSend;
-    }
-
-    public function getCreatedAt(): DateTimeImmutable
-    {
-        return $this->createdAt;
+        return $this;
     }
 }

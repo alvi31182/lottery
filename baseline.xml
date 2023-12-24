@@ -10,6 +10,11 @@
     </PossiblyNullIterator>
   </file>
   <file src="src/Core/Infrastructure/Kafka/Producer/AbstractKafkaProducer.php">
+    <InvalidThrow>
+      <code>
+        $exception
+      </code>
+    </InvalidThrow>
     <UndefinedConstant>
       <code>RD_KAFKA_PARTITION_UA</code>
       <code>RD_KAFKA_RESP_ERR_NO_ERROR</code>

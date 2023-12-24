@@ -8,10 +8,12 @@ use App\Core\Infrastructure\Kafka\Producer\Enum\ProduceKafkaTopic;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Nonstandard\Uuid;
 use RdKafka\Conf;
-use RdKafka\Exception;
 use RdKafka\Producer;
 use RdKafka\TopicConf;
 
+/**
+ * @psalm-suppress InvalidThrow
+ */
 abstract class AbstractKafkaProducer
 {
     public function __construct(
@@ -26,7 +28,8 @@ abstract class AbstractKafkaProducer
     abstract protected function buildTopicConf(): TopicConf;
 
     /**
-     * @throws Exception
+     * @psalm-suppress MixedReturnStatement
+     * @psalm-suppress InvalidThrow
      */
     public function produce(string $message): int
     {

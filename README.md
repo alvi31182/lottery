@@ -31,18 +31,35 @@ Flexibility of configuration:
 
 
 **Database structure**
+
 <img src="public/ReadmeImg/db-gram.png" alt="image" style="width:500px;height:auto;">
+<hr>
 
 **How the Process Works:***
 
-The [KafkaWorker](src%2FCore%2FWorker%2FKafka%2FKafkaWorker.php) initiates a polling loop in Kafka, adding the consumer_group_id **"lottery_service_consumer_group"** Since there can be many participants in the lottery, and consequently, there can be more than a million messages in the **"player.v1.staked"** topic, it is necessary to store these messages in a SplQueue data structure.
-
+The [KafkaWorker](src%2FCore%2FWorker%2FKafka%2FKafkaWorker.php) initiates a polling ReactPHP event loop in Kafka, adding the consumer_group_id **"lottery_service_consumer_group"**  in the **"player.v1.staked"** topic.
+<hr>
 Let's imagine that we have a **Game Service** that sends data to a Kafka topic subscribed to by the Lottery Service. The **Lottery Service** receives data from the topic, processes it, and populates the **"lottery"** table, specifying the status as **"in_waiting"**
+<hr>
 
-In the KafkaWorker run symfony console command **"bin/console app:consume"**, the received message about the player who placed a bet is sent to the **[LotteryCreateHandler](src%2FLottery%2FApplication%2FUseCase%2FLotteryCreateHandler.php)**, where the JSON-formatted message is decoded into an associative array. Then a record with the status **"in_waiting"** is saved in the Lottery table.
+**[LotteryCreateHandler](src%2FLottery%2FApplication%2FUseCase%2FLotteryCreateHandler.php)**, processing of received messages with ReactPHP for create Lottery.
+<hr>
 
-After obtaining the list of lottery participants, a command is sent to update the status to **"started"** using the **"[UpdateLotteryToStartCommand](src%2FLottery%2FApplication%2FCommand%2FUpdateLotteryToStartCommand.php)"** In the **"[LotteryUpdateStatusToStartedHandler](src%2FLottery%2FApplication%2FUseCase%2FLotteryUpdateStatusToStartedHandler.php)"** this handler updates the Lottery status and selects the list of participants with the status **"started"**.
+**[UpdateLotteryToStartCommand](src%2FLottery%2FApplication%2FCommand%2FUpdateLotteryToStartCommand.php)** In the **[LotteryUpdateStatusToStartedHandler](src%2FLottery%2FApplication%2FUseCase%2FLotteryUpdateStatusToStartedHandler.php)** this handler updates the Lottery status and selects the list of participants with the status **"started"**.
+<hr>
 
-After the lottery list has been updated to the status **"started"**, run the command in the class **"ProcessRunDetermineWinner"** **"bin/console app:determine_winner"** to determine the lottery winner, get the list of participants and determine the winner. After we have determined the winner, we pass the lottery_id of the winner in the **"[UpdateLotteryToStartCommand](src%2FLottery%2FApplication%2FCommand%2FUpdateLotteryToStartCommand.php)"** to the **"[LotteryUpdateStatusToStartedHandler](src%2FLottery%2FApplication%2FUseCase%2FLotteryUpdateStatusToStartedHandler.php)"** handler to update the status in **"finished"** except for the **lottery_id** of the winner, since his status is updated in **"winner"**.
+**[ProcessRunDetermineWinner](src%2FLottery%2FApplication%2FConsole%2FCommand%2FProcessRunDetermineWinner.php)**  to determine the lottery winner.
+<hr>
 
-Next is an example of using domain events for the **Outbox** from the **LotteryAward** model. As soon as we receive the **[LotteryDeterminedWinner](src%2FLottery%2FApplication%2FEvents%2FEventData%2FLotteryDeterminedWinner.php)** in the **[LotteryAwardCreateHandler](src%2FLottery%2FApplication%2FUseCase%2FLotteryAwardCreateHandler.php)**, we create a **[LotteryAward](src%2FLottery%2FModel%2FLotteryAward.php)** and generate an **[AwardCreated](src%2FLottery%2FModel%2FEvents%2FAwardCreated.php)** event object within the **LotteryAward model**. This event object is handled by a subscriber to this event, **App\Lottery\Shared\**[SharedDomainEvent](src%2FLottery%2FShared%2FSharedDomainEvent.php)**, implementing the **[DomainEventSubscriber](src%2FLottery%2FApplication%2FEvents%2FDomainEvents%2FSubscriber%2FDomainEventSubscriber.php)** interface. In this case, a record is created in **lottery_award**, and upon the **AwardCreated** event, a record is generated in the outbox for further processing, sending to the Kafka topic **"lottery.v1.award"** with the **message => eventType "lotteryAwardCreated"**
+**[UpdateLotteryToStartCommand](src%2FLottery%2FApplication%2FCommand%2FUpdateLotteryToStartCommand.php)** to the **[LotteryUpdateStatusToStartedHandler](src%2FLottery%2FApplication%2FUseCase%2FLotteryUpdateStatusToStartedHandler.php)** handler to update the status in **"finished"**  since his status is updated in **"winner"**.
+<hr>
+
+**[LotteryAward](src%2FLottery%2FModel%2FLotteryAward.php)** initializied domain event **[AwardCreated](src%2FLottery%2FModel%2FEvents%2FAwardCreated.php)**.
+<hr>
+
+**[OutboxEventHandler](src%2FOutbox%2FApplication%2FUseCase%2FOutboxEventHandler.php)** handle **[AwardCreated](src%2FLottery%2FModel%2FEvents%2FAwardCreated.php)** save in Outbox table event data for Kafka to other service.
+<hr>
+
+**[OutboxSchedule](src%2FOutbox%2FApplication%2FConsole%2FScheduler%2FOutboxSchedule.php)** get records from the Outbox table and to produce messages.
+
+**[OutboxSchedulerMessageHandler](src%2FOutbox%2FApplication%2FUseCase%2FOutboxSchedulerMessageHandler.php)**

@@ -35,18 +35,20 @@ final class PlayerCreateStakeToGame extends AbstractController
         $rk = new Producer($conf);
         $rk->addBrokers('lottery_kafka');
 
-        $data = [
-            'message' => [
-                'eventType' => 'player.stakeCreated',
-            ],
-            'game' => [
-                'playerId' => Uuid::uuid7()->toString(),
-                'gameId' => Uuid::uuid7()->toString(),
-                'stake' => (string) rand(1000, 20000),
-            ],
-        ];
 
-        for ($i = 0; $i < 3000; $i++) {
+
+        for ($i = 0; $i < 50; $i++) {
+            $data = [
+                'message' => [
+                    'eventType' => 'player.stakeCreated',
+                ],
+                'game' => [
+                    'playerId' => Uuid::uuid7()->toString(),
+                    'gameId' => Uuid::uuid7()->toString(),
+                    'stake' => (string) rand(1000, 20000),
+                ],
+            ];
+
             $payload = json_encode($data, JSON_THROW_ON_ERROR | JSON_FORCE_OBJECT);
 
             $topic = $rk->newTopic(self::TOPIC_PREFIX . self::TOPIC_NAME);

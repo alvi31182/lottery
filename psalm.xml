@@ -22,6 +22,7 @@
     <projectFiles>
         <directory name="src" />
         <ignoreFiles>
+            <directory name="var"/>
             <directory name="vendor"/>
             <directory name="tests"/>
         </ignoreFiles>
