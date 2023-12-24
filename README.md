@@ -58,3 +58,18 @@
 
 1. Run `docker-compose up --build`.
 2. Send test data for Kafka using the POST method to [http://127.0.0.1:81/stake](http://127.0.0.1:81/stake)
+
+# Build and Run
+
+The Lottery Service project is built and managed using Docker. Below are the available make targets to build and run the project.
+
+## Make Targets
+
+### Build Docker Images
+
+To build Docker images, run the following command:
+
+```bash
+make build
+```
+This command also copies configuration files from their .dist files.
