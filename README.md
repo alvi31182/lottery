@@ -1,114 +1,60 @@
-<h1>Lottery Service</h1>
+# Lottery Service
 
 ![dia.png](public%2FReadmeImg%2Fdia.png)
 
-<ul>
-<li>
-<h5>Each command is handled by a separate container</h5>
-</li>
-<li>
-<h5>Resource isolation:</h5>
-</li>
-<li>Each container will run in its own environment, which ensures resource isolation. If one of the teams becomes overloaded, it does not affect the others.</li>
-<li>
-<h5>
-Flexibility of configuration:
-</h5>
-</li>
-<li>Different commands may require different dependencies, settings, or PHP versions. Using separate containers provides customization flexibility for each team.</li>
-</ul>
+## Features
 
-<hr>
-<ul>
-<li>This is one of the services that involves a lottery draw when a player places a bet.</li>
-<li>For example, a player registers in the system, makes a deposit, then selects a game and places a sports bet.</li>
-<li>Data for the Lottery model is sourced from another service, such as a gaming service. </li>
-<li>In the gaming service, a user places a bet on a game, and as soon as the bet is made, the gaming service sends events of the player's actions to the Kafka broker. </li>
-<li>The lottery service subscribes to the <b>"player.v1.staked"</b> topic with a message type of <b>"player.stakeCreated"`</b>. After the lottery service receives the message data, it creates a lottery for the respective player based on their ID and the ID of the game in which they placed the bet.</li>
-<li>After a specific number of players who placed the initial bet have been gathered, the lottery drawing begins, and the status is updated from "in_waiting" to "started." </li>
-<li>The winner is selected, and once the winner is determined, the status in the lottery table is updated from "started" to "finished," and the winner's status set to "winner." </li>
-<li>After determining the winner, the data <b>'lottery_id'</b> and <b>'win_sum'</b> are recorded in the <b>`lottery_award`</b> table, and the status <b>'played_out'</b> is added. Once <b>`LotteryAward`</b> is created, the domain event <b>`AwardCreated`</b> is triggered. The event is sent to a subscriber in the Outbox, and the event data is recorded in the <b>`Outbox`</b> table. </li>
-<li>The producer (run by a daemon) sends the data from the Outbox table to Kafka, creating the topic <b>'lottery.v1.award'</b> with the messageType <b>`lotteryAwardCreated`</b>.  </li>
-<li>Other services, typically <b>`PlayerService`</b>, read this topic to inform the player that they have won a prize.</li>
-</ul>
+- Each command is handled by a separate container.
+- **Resource isolation:**
+    - Each container runs in its own environment, ensuring resource isolation. If one of the teams becomes overloaded, it does not affect the others.
+- **Flexibility of configuration:**
+    - Different commands may require different dependencies, settings, or PHP versions. Using separate containers provides customization flexibility for each team.
 
+---
 
-**Database structure**
+## Overview
 
-<img src="public/ReadmeImg/db-gram.png" alt="image" style="width:500px;height:auto;">
-<hr>
+- This is one of the services that involves a lottery draw when a player places a bet.
+- For example, a player registers in the system, makes a deposit, then selects a game and places a sports bet.
+- Data for the Lottery model is sourced from another service, such as a gaming service.
+- In the gaming service, a user places a bet on a game, and as soon as the bet is made, the gaming service sends events of the player's actions to the Kafka broker.
+- The lottery service subscribes to the **"player.v1.staked"** topic with a message type of **"player.stakeCreated"**. After the lottery service receives the message data, it creates a lottery for the respective player based on their ID and the ID of the game in which they placed the bet.
+- After a specific number of players who placed the initial bet have been gathered, the lottery drawing begins, and the status is updated from "in_waiting" to "started."
+- The winner is selected, and once the winner is determined, the status in the lottery table is updated from "started" to "finished," and the winner's status set to "winner."
+- After determining the winner, the data **'lottery_id'** and **'win_sum'** are recorded in the **`lottery_award`** table, and the status **'played_out'** is added. Once **`LotteryAward`** is created, the domain event **`AwardCreated`** is triggered. The event is sent to a subscriber in the Outbox, and the event data is recorded in the **`Outbox`** table.
+- The producer (run by a daemon) sends the data from the Outbox table to Kafka, creating the topic **'lottery.v1.award'** with the messageType **`lotteryAwardCreated`**.
+- Other services, typically **`PlayerService`**, read this topic to inform the player that they have won a prize.
 
-**How the Process Works:***
-<ol>
-<li>
+---
 
-<p>
+## Database Structure
 
-The [KafkaWorker](src%2FCore%2FWorker%2FKafka%2FKafkaWorker.php) initiates a polling ReactPHP event loop in Kafka, adding the consumer_group_id **"lottery_service_consumer_group"**  in the **"player.v1.staked"** topic.
-Let's imagine that we have a **Game Service** that sends data to a Kafka topic subscribed to by the Lottery Service. The **Lottery Service** receives data from the topic, processes it, and populates the **"lottery"** table, specifying the status as **"in_waiting"**
-</p>
-</li>
-<li>
+![Database Structure](public/ReadmeImg/db-gram.png)
 
-**[LotteryCreateHandler](src%2FLottery%2FApplication%2FUseCase%2FLotteryCreateHandler.php)**, processing of received messages with ReactPHP for create Lottery.
-</li>
-<li>
+---
 
-**[UpdateLotteryToStartCommand](src%2FLottery%2FApplication%2FCommand%2FUpdateLotteryToStartCommand.php)** In the **[LotteryUpdateStatusToStartedHandler](src%2FLottery%2FApplication%2FUseCase%2FLotteryUpdateStatusToStartedHandler.php)** this handler updates the Lottery status and selects the list of participants with the status **"started"**.
-</li>
-<li>
+## How the Process Works
 
-**[ProcessRunDetermineWinner](src%2FLottery%2FApplication%2FConsole%2FCommand%2FProcessRunDetermineWinner.php)**  to determine the lottery winner.
+1. **KafkaWorker:** Initiates a polling ReactPHP event loop in Kafka, adding the consumer_group_id **"lottery_service_consumer_group"** in the **"player.v1.staked"** topic.
+    - Let's imagine that we have a **Game Service** that sends data to a Kafka topic subscribed to by the Lottery Service. The **Lottery Service** receives data from the topic, processes it, and populates the **"lottery"** table, specifying the status as **"in_waiting"**.
 
-</li>
+2. **[LotteryCreateHandler](src%2FLottery%2FApplication%2FUseCase%2FLotteryCreateHandler.php):** Processes received messages with ReactPHP to create a Lottery.
 
-<li>
+3. **[UpdateLotteryToStartCommand](src%2FLottery%2FApplication%2FCommand%2FUpdateLotteryToStartCommand.php):** In the **[LotteryUpdateStatusToStartedHandler](src%2FLottery%2FApplication%2FUseCase%2FLotteryUpdateStatusToStartedHandler.php)**, this handler updates the Lottery status and selects the list of participants with the status **"started"**.
 
-**[UpdateLotteryToStartCommand](src%2FLottery%2FApplication%2FCommand%2FUpdateLotteryToStartCommand.php)** to the **[LotteryUpdateStatusToStartedHandler](src%2FLottery%2FApplication%2FUseCase%2FLotteryUpdateStatusToStartedHandler.php)** handler to update the status in **"finished"**  since his status is updated in **"winner"**.
+4. **[ProcessRunDetermineWinner](src%2FLottery%2FApplication%2FConsole%2FCommand%2FProcessRunDetermineWinner.php):** Determines the lottery winner.
 
-</li>
+5. **[UpdateLotteryToStartCommand](src%2FLottery%2FApplication%2FCommand%2FUpdateLotteryToStartCommand.php):** To the **[LotteryUpdateStatusToStartedHandler](src%2FLottery%2FApplication%2FUseCase%2FLotteryUpdateStatusToStartedHandler.php)** handler to update the status to **"finished"** since his status is updated to **"winner"**.
 
-<li>
+6. **[LotteryAward](src%2FLottery%2FModel%2FLotteryAward.php):** Initialized domain event **[AwardCreated](src%2FLottery%2FModel%2FEvents%2FAwardCreated.php)**.
 
-**[LotteryAward](src%2FLottery%2FModel%2FLotteryAward.php)** initializied domain event **[AwardCreated](src%2FLottery%2FModel%2FEvents%2FAwardCreated.php)**.
-</li>
+7. **[OutboxEventHandler](src%2FOutbox%2FApplication%2FUseCase%2FOutboxEventHandler.php):** Handles **[AwardCreated](src%2FLottery%2FModel%2FEvents%2FAwardCreated.php)** and saves event data in the Outbox table.
 
-<li>
+8. **[OutboxSchedule](src%2FOutbox%2FApplication%2FConsole%2FScheduler%2FOutboxSchedule.php):** Gets records from the Outbox table to produce messages.
 
-**[OutboxEventHandler](src%2FOutbox%2FApplication%2FUseCase%2FOutboxEventHandler.php)** handle **[AwardCreated](src%2FLottery%2FModel%2FEvents%2FAwardCreated.php)** save in Outbox table event data for Kafka to other service.
-</li>
+9. **[OutboxSchedulerMessageHandler](src%2FOutbox%2FApplication%2FUseCase%2FOutboxSchedulerMessageHandler.php):** Guarantees the delivery of messages without duplication.
 
-<li>
+### Build Locally
 
-**[OutboxSchedule](src%2FOutbox%2FApplication%2FConsole%2FScheduler%2FOutboxSchedule.php)** get records from the Outbox table and to produce messages.
-</li>
-<li>
-
-**[OutboxSchedulerMessageHandler](src%2FOutbox%2FApplication%2FUseCase%2FOutboxSchedulerMessageHandler.php)** Guarantees the delivery of messages without duplication.
-</li>
-</ol>
-
-<h4>
-Build loclal.
-</h4>
-<ol>
-<li>
-
-```php
-docker-compose up --build
-```
-</li>
-<li>
-
-```php
-Run test data for Kafka POST method http://127.0.0.1:81/stake
-```
-</li>
-
-<li>
-
-```php
-bin/console app:consume
-```
-</li>
-</ol>
+1. Run `docker-compose up --build`.
+2. Send test data for Kafka using the POST method to [http://127.0.0.1:81/stake](http://127.0.0.1:81/stake)
