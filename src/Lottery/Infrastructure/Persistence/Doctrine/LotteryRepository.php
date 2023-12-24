@@ -27,6 +27,7 @@ class LotteryRepository extends EntityRepository implements ReadLotteryStorage, 
 {
     public function __construct(
         EntityManagerInterface $em,
+        private readonly NativeSqlQueryForLotteryTable $nativeSqlQuery,
         private readonly LoggerInterface $logger
     ) {
         parent::__construct($em, $em->getClassMetadata(className: Lottery::class));
@@ -53,29 +54,7 @@ class LotteryRepository extends EntityRepository implements ReadLotteryStorage, 
      */
     public function getLotteryListByStatusInWaiting(): array
     {
-        $connection = $this->getEntityManager()->getConnection();
-
-        $lotteryDtoList = [];
-
-        $SQL = <<<SQL
-            SELECT 
-                lott.game_id, 
-                lott.player_id
-            FROM lottery AS lott WHERE status = 'in_waiting' 
-                                   AND lott.updated_at IS NULL
-SQL;
-        $results = $connection->executeQuery(
-            sql: $SQL
-        )->fetchAllAssociative();
-
-        foreach ($results as $result) {
-            $lotteryDtoList[] = new LotteryListInWaiting(
-                gameId: $result['game_id'],
-                playerId: $result['player_id']
-            );
-        }
-
-        return $lotteryDtoList;
+        return $this->nativeSqlQuery->getLotteryListByStatusInWaiting();
     }
 
     /**
@@ -85,34 +64,7 @@ SQL;
      */
     public function getLotteryListInStarted(): array
     {
-        $connection = $this->getEntityManager()->getConnection();
-
-        $lotteryStartedDtoList = [];
-
-        $SQL = <<<SQL
-            SELECT
-                lott.id,
-                lott.game_id, 
-                lott.player_id,
-                lott.stake
-            FROM lottery AS lott WHERE status = 'started' 
-                                   AND lott.updated_at IS NULL
-SQL;
-
-        $results = $connection->executeQuery(
-            sql: $SQL
-        )->fetchAllAssociative();
-
-        foreach ($results as $result) {
-            $lotteryStartedDtoList[] = new LotteryListInStarted(
-                lotteryId: $result['id'],
-                gameId: $result['game_id'],
-                playerId: $result['player_id'],
-                stake: $result['stake']
-            );
-        }
-
-        return $lotteryStartedDtoList;
+        return $this->nativeSqlQuery->getLotteryListInStarted();
     }
 
     /**
@@ -122,77 +74,11 @@ SQL;
      */
     public function updateLotteryStatusToStarted(array $lotteryListWaiting): void
     {
-        $connection = $this->getEntityManager()->getConnection();
-
-        try {
-            $connection->beginTransaction();
-
-            $SQL = $this->buildUpdateQuery($lotteryListWaiting);
-
-            $parameters = $this->extractPlayerIdsForInWaiting($lotteryListWaiting);
-
-            $connection->executeStatement($SQL, $parameters);
-            $connection->commit();
-        } catch (Exception $e) {
-            $connection->rollBack();
-            $this->logger->error($e->getMessage());
-        }
+        $this->nativeSqlQuery->toStarted(lotteryListWaiting: $lotteryListWaiting);
     }
 
     public function updateLotteryStatusToFinished(LotteryId $lotteryId): void
     {
-        $connection = $this->getEntityManager()->getConnection();
-
-        try {
-            $connection->beginTransaction();
-
-            $SQL = $this->buildUpdateQueryToStatusFinished();
-
-            $connection->executeStatement(
-                sql: $SQL,
-                params: [
-                    'lotteryId' => $lotteryId->getId()->toString(),
-                ]
-            );
-
-            $connection->commit();
-        } catch (Exception $e) {
-            $connection->rollBack();
-            $this->logger->error($e->getMessage());
-        }
-    }
-
-    private function buildUpdateQueryToStatusFinished(): string
-    {
-        return <<<SQL
-            UPDATE lottery
-                SET status = 'winner' 
-            WHERE id IN (:lotteryId) AND status NOT IN ('in_waiting')
-                
-SQL;
-    }
-
-    /**
-     * @param array<LotteryListInWaiting> $lotteryListWaiting
-     */
-    private function buildUpdateQuery(array $lotteryListWaiting): string
-    {
-        $placeholders = implode(',', array_fill(0, count($lotteryListWaiting), '?'));
-
-        return <<<SQL
-                UPDATE lottery
-                    SET status = 'started'
-                WHERE player_id IN ($placeholders) AND status = 'in_waiting'
-SQL;
-    }
-
-    /**
-     * @param array<LotteryListInWaiting> $lotteryListWaiting
-     *
-     * @return array<string>
-     */
-    private function extractPlayerIdsForInWaiting(array $lotteryListWaiting): array
-    {
-        return array_map(static fn($lottery) => $lottery->playerId, $lotteryListWaiting);
+        $this->nativeSqlQuery->toFinished(lotteryId: $lotteryId->getId()->toString());
     }
 }

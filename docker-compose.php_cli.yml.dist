@@ -1,0 +1,62 @@
+version: '3.3'
+
+services:
+  php_cli:
+    container_name: lottery_php_cli
+    build:
+      context: .
+      dockerfile: ./docker/php-cli/Dockerfile
+    volumes:
+      - .:/var/www/lottery:delegated
+    ports:
+      - "9006:9006"
+    depends_on:
+      - db
+      - php
+    networks:
+      - lottery
+      - bridge
+    tty: true
+
+  php_cli_two:
+    container_name: lottery_cli_two
+    build:
+      context: .
+      dockerfile: ./docker/php-cli-two/Dockerfile
+    volumes:
+      - .:/var/www/lottery:delegated
+    ports:
+      - "9007:9007"
+    depends_on:
+      - db
+      - php
+    networks:
+      - lottery
+      - bridge
+    tty: true
+
+  php_cli_outbox:
+    container_name: outbox_cli
+    build:
+      context: .
+      dockerfile: ./docker/php-outbox-cli/Dockerfile
+    volumes:
+      - .:/var/www/lottery:delegated
+    ports:
+      - "9008:9008"
+    depends_on:
+      - db
+      - php
+    networks:
+      - lottery
+      - bridge
+    tty: true
+
+networks:
+  bridge:
+    external:
+      name: internal_bridge
+  lottery:
+    driver: "bridge"
+    driver_opts:
+      com.docker.network.driver.mtu: 1400

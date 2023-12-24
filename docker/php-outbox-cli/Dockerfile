@@ -9,13 +9,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     tzdata \
     dumb-init \
     fcgiwrap \
+    librdkafka-dev \
     && docker-php-ext-configure tokenizer \
     && docker-php-ext-configure pcntl --enable-pcntl \
     && docker-php-ext-configure intl --enable-intl \
     && docker-php-ext-install -j$(nproc) pcntl xmlwriter simplexml intl mysqli pdo pdo_pgsql sockets \
     && pecl update-channels \
-    && pecl install apcu opcache \
+    && pecl install apcu opcache rdkafka \
     && docker-php-ext-enable \
+        rdkafka \
         pcntl \
         apcu \
         opcache \

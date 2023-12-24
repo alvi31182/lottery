@@ -25,14 +25,15 @@ final readonly class LotteryUpdateStatusToStartedHandler
      */
     public function handle(UpdateLotteryToStartCommand $command): void
     {
-        if (empty($command->lotteryList)) {
-            $this->logger->info(
-                'Lottery list empty and not yet new lottery started'
-            );
-
-            return;
-        }
         try {
+            if (empty($command->lotteryList)) {
+                $this->logger->info(
+                    'Lottery list empty and not yet new lottery started'
+                );
+
+                return;
+            }
+
             $this->writeLotteryStorage->updateLotteryStatusToStarted(
                 lotteryListWaiting: $command->lotteryList
             );

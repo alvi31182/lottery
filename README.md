@@ -39,32 +39,76 @@ Flexibility of configuration:
 <hr>
 
 **How the Process Works:***
+<ol>
+<li>
+
+<p>
 
 The [KafkaWorker](src%2FCore%2FWorker%2FKafka%2FKafkaWorker.php) initiates a polling ReactPHP event loop in Kafka, adding the consumer_group_id **"lottery_service_consumer_group"**  in the **"player.v1.staked"** topic.
-<hr>
 Let's imagine that we have a **Game Service** that sends data to a Kafka topic subscribed to by the Lottery Service. The **Lottery Service** receives data from the topic, processes it, and populates the **"lottery"** table, specifying the status as **"in_waiting"**
-<hr>
+</p>
+</li>
+<li>
 
 **[LotteryCreateHandler](src%2FLottery%2FApplication%2FUseCase%2FLotteryCreateHandler.php)**, processing of received messages with ReactPHP for create Lottery.
-<hr>
+</li>
+<li>
 
 **[UpdateLotteryToStartCommand](src%2FLottery%2FApplication%2FCommand%2FUpdateLotteryToStartCommand.php)** In the **[LotteryUpdateStatusToStartedHandler](src%2FLottery%2FApplication%2FUseCase%2FLotteryUpdateStatusToStartedHandler.php)** this handler updates the Lottery status and selects the list of participants with the status **"started"**.
-<hr>
+</li>
+<li>
 
 **[ProcessRunDetermineWinner](src%2FLottery%2FApplication%2FConsole%2FCommand%2FProcessRunDetermineWinner.php)**  to determine the lottery winner.
-<hr>
+
+</li>
+
+<li>
 
 **[UpdateLotteryToStartCommand](src%2FLottery%2FApplication%2FCommand%2FUpdateLotteryToStartCommand.php)** to the **[LotteryUpdateStatusToStartedHandler](src%2FLottery%2FApplication%2FUseCase%2FLotteryUpdateStatusToStartedHandler.php)** handler to update the status in **"finished"**  since his status is updated in **"winner"**.
-<hr>
+
+</li>
+
+<li>
 
 **[LotteryAward](src%2FLottery%2FModel%2FLotteryAward.php)** initializied domain event **[AwardCreated](src%2FLottery%2FModel%2FEvents%2FAwardCreated.php)**.
-<hr>
+</li>
+
+<li>
 
 **[OutboxEventHandler](src%2FOutbox%2FApplication%2FUseCase%2FOutboxEventHandler.php)** handle **[AwardCreated](src%2FLottery%2FModel%2FEvents%2FAwardCreated.php)** save in Outbox table event data for Kafka to other service.
-<hr>
+</li>
+
+<li>
 
 **[OutboxSchedule](src%2FOutbox%2FApplication%2FConsole%2FScheduler%2FOutboxSchedule.php)** get records from the Outbox table and to produce messages.
-
-<hr>
+</li>
+<li>
 
 **[OutboxSchedulerMessageHandler](src%2FOutbox%2FApplication%2FUseCase%2FOutboxSchedulerMessageHandler.php)** Guarantees the delivery of messages without duplication.
+</li>
+</ol>
+
+<h4>
+Build loclal.
+</h4>
+<ol>
+<li>
+
+```php
+docker-compose up --build
+```
+</li>
+<li>
+
+```php
+Run test data for Kafka POST method http://127.0.0.1:81/stake
+```
+</li>
+
+<li>
+
+```php
+bin/console app:consume
+```
+</li>
+</ol>
