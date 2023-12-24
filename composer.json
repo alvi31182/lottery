@@ -3,9 +3,11 @@
     "type": "project",
     "authors": [
         {
-            "name": "Alvi"
+            "name": "Alvi Isaknderov"
         }
     ],
+    "description": "Lottery Service Project",
+    "version": "1.0.0",
     "require": {
         "ext-pcntl": "*",
         "symfony/flex": "^2.4",
