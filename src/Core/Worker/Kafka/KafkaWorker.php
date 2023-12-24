@@ -110,8 +110,6 @@ final class KafkaWorker extends Command
                     }
                 );
         }
-
-        $this->outputMemoryUsage();
     }
 
     private function handleMessageAsync(string $payload, Deferred $deferred): PromiseInterface
@@ -131,12 +129,5 @@ final class KafkaWorker extends Command
         $output->getFormatter()->setStyle('green', $greenStyle);
 
         $output->writeln('<green>' . $message . '</green>');
-    }
-
-    private function outputMemoryUsage(): void
-    {
-        $peakMemoryUsage = memory_get_peak_usage(true);
-        $peakMemoryUsageMB = round($peakMemoryUsage / (1024 * 1024), 2);
-        $this->logger->info("Peak memory usage: $peakMemoryUsageMB MB");
     }
 }
