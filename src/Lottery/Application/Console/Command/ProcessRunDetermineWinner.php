@@ -97,6 +97,9 @@ final class ProcessRunDetermineWinner extends Command
         );
     }
 
+    /**
+     * @see LotteryAwardCreateHandler::handle()
+     */
     private function dispatchLotteryDeterminedWinnerEvent(
         string $prize,
         LotteryListInStarted $lotteryListInStarted

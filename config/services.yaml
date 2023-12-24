@@ -29,6 +29,11 @@ services:
             - '%kafka.consumer.group%'
             - '%kafka.topic.prefix%'
 
+    App\Core\Infrastructure\Kafka\Producer\OutboxKafkaProduceService:
+        arguments:
+            - '%kafka.topic.prefix%'
+            - '%kafka.broker.list%'
+
     App\Lottery\Model\ReadLotteryStorage:
         public: true
         class: App\Lottery\Infrastructure\Persistence\Doctrine\LotteryRepository

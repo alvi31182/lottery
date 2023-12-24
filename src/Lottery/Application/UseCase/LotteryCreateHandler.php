@@ -22,6 +22,9 @@ final readonly class LotteryCreateHandler
     ) {
     }
 
+    /**
+     * @psalm-suppress MixedArgumentTypeCoercion
+     */
     public function handleAsync(string $message, Deferred $deferred): PromiseInterface
     {
         try {
@@ -48,8 +51,7 @@ final readonly class LotteryCreateHandler
     {
         $this->loop->addTimer(0, function () use ($deferred, $message) {
             try {
-                $messageData = json_decode($message, true, JSON_THROW_ON_ERROR);
-                $deferred->resolve($messageData);
+                $deferred->resolve(json_decode($message, true, JSON_THROW_ON_ERROR));
             } catch (Throwable $exception) {
                 $deferred->reject($exception);
             }

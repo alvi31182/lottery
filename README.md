@@ -15,7 +15,7 @@ Flexibility of configuration:
 <li>Different commands may require different dependencies, settings, or PHP versions. Using separate containers provides customization flexibility for each team.</li>
 </ul>
 
-<div style="border-top: #2e3136; border-style: solid; margin: 2px"></div>
+<hr>
 <ul>
 <li>This is one of the services that involves a lottery draw when a player places a bet.</li>
 <li>For example, a player registers in the system, makes a deposit, then selects a game and places a sports bet.</li>

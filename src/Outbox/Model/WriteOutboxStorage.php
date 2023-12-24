@@ -6,5 +6,5 @@ namespace App\Outbox\Model;
 
 interface WriteOutboxStorage
 {
-    public function createOutbox(Outbox $outbox);
+    public function createOutbox(Outbox $outbox): void;
 }
