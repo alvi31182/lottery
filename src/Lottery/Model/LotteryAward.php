@@ -7,7 +7,6 @@ namespace App\Lottery\Model;
 use App\Lottery\Application\Events\EventData\LotteryDeterminedWinner;
 use App\Lottery\Infrastructure\Persistence\Doctrine\LotteryAwardRepository;
 use App\Lottery\Model\Enum\AwardStatus;
-use App\Lottery\Model\Events\AggregateRoot;
 use App\Lottery\Model\Events\AwardCreated;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;

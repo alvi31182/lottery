@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Lottery\Model\Events;
+namespace App\Lottery\Model;
 
 use App\Lottery\Application\Events\DomainEvents\Subscriber\DomainEventSubscriber;
+use App\Lottery\Model\Events\DomainEvent;
 use SplQueue;
 
 /**
