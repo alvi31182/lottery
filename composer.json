@@ -9,6 +9,7 @@
     "description": "Lottery Service Project",
     "version": "1.0.0",
     "require": {
+        "php": ">=8.2",
         "ext-pcntl": "*",
         "symfony/flex": "^2.4",
         "symfony/cache-contracts": "^3.4",
