@@ -49,7 +49,7 @@ final readonly class OutboxSchedulerMessageHandler
                 message: $exception->getMessage()
             );
             throw new OutboxGetListException(
-                sprintf('Outbox get list error %s', $exception->getMessage())
+                sprintf('Error from outbox %s', $exception->getMessage())
             );
         }
     }
@@ -72,7 +72,7 @@ final readonly class OutboxSchedulerMessageHandler
                 message: $exception->getMessage()
             );
             throw new OutboxCreateException(
-                sprintf('Outbox get list error %s', $exception->getMessage())
+                sprintf('Error from update outbox %s', $exception->getMessage())
             );
         }
     }
