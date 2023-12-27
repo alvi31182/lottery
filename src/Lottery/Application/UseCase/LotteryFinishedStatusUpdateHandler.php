@@ -25,6 +25,7 @@ final readonly class LotteryFinishedStatusUpdateHandler
      */
     public function handle(UpdateToFinishedCommand $command): void
     {
+
         try {
             $this->writeLotteryStorage->updateLotteryStatusToFinished(
                 lotteryId: new LotteryId(id: Uuid::fromString($command->lotteryId))

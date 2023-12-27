@@ -39,6 +39,9 @@ SQL;
             sql: $SQL
         )->fetchAllAssociative();
 
+        /**
+         * @var array<string> $result
+         */
         foreach ($results as $result) {
             $lotteryDtoList[] = new LotteryListInWaiting(
                 gameId: $result['game_id'],
@@ -74,6 +77,7 @@ SQL;
             sql: $SQL
         )->fetchAllAssociative();
 
+        /** @var array<string> $result */
         foreach ($results as $result) {
             $lotteryStartedDtoList[] = new LotteryListInStarted(
                 lotteryId: $result['id'],
@@ -142,7 +146,6 @@ SQL;
                 WHEN id = (:lotteryId) THEN 'winner'
                 ELSE 'finished'
             END
-            WHERE id <> :lotteryId
 SQL;
     }
 

@@ -90,6 +90,7 @@ final class ProcessRunDetermineWinner extends Command
      */
     private function updateToFinished(LotteryListInStarted $lotteryListInStarted): void
     {
+
         $this->finishedStatusUpdateHandler->handle(
             command: new UpdateToFinishedCommand(
                 lotteryId: $lotteryListInStarted->lotteryId
