@@ -28,6 +28,60 @@ services:
       - lottery
       - bridge
 
+  schema-registry:
+    image: confluentinc/cp-schema-registry:7.5.1
+    hostname: schema-registry
+    container_name: schema-registry
+    depends_on:
+      - kafka_lottery
+    ports:
+      - "8081:8081"
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka_lottery:9092
+    networks:
+      - lottery
+      - bridge
+
+  ksqldb-server:
+    image: confluentinc/ksqldb-server:0.29.0
+    hostname: lottery-ksqldb
+    container_name: lottery-ksqldb
+    environment:
+      KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: 'true'
+      KSQL_KSQL_LOGGING_PROCESSING_TOPIC_AUTO_CREATE: 'true'
+    depends_on:
+      - kafka_lottery
+    ports:
+      - "8088:8088"
+    command: bash -c "chmod +x /etc/ksqldb-server/run.sh && /etc/ksqldb-server/run.sh"
+    volumes:
+      - ./docker/ksqldb-server:/etc/ksqldb-server
+    networks:
+      - lottery
+      - bridge
+
+  ksqldb-cli:
+    image: confluentinc/ksqldb-cli:0.29.0
+    hostname: lottery-ksqlcli
+    container_name: lottery-ksqlcli
+    depends_on:
+      - kafka_lottery
+      - ksqldb-server
+    entrypoint: /bin/sh
+    command:
+      - -c
+      - |
+        ksql http://ksqldb-server:8088
+        RUN SCRIPT '/etc/sql/all.sql';
+    tty: true
+    volumes:
+      - ./docker/ksqldb-cli/sql:/etc/sql
+      - ./docker/config:/etc/config/cli.properties
+    networks:
+      - lottery
+      - bridge
+
   kafka_lottery_ui:
     image: provectuslabs/kafka-ui:latest
     container_name: lottery-kafka-ui
