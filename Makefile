@@ -31,6 +31,9 @@ php:
 ip-kafka:
 	docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' lottery_kafka
 
+ksqldb:
+	docker exec -it lottery-ksqlcli  ksql http://ksqldb-server:8088
+
 copy-config-files:
 	cp docker-compose.yml.dist docker-compose.yml
 	cp docker-compose.php_cli.yml.dist docker-compose.php_cli.yml

@@ -21,7 +21,7 @@ final class Version20231219094850 extends AbstractMigration
                             event_name VARCHAR(255) NOT NULL, 
                             event_data JSONB NOT NULL, 
                             is_send BOOLEAN DEFAULT false NOT NULL, 
-                            createdAt TIMESTAMP(0) WITH TIME ZONE NOT NULL, 
+                            created_at timestamp NOT NULL, 
                             PRIMARY KEY(id))'
         );
     }
