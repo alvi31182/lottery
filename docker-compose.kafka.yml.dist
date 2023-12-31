@@ -73,7 +73,7 @@ services:
       - -c
       - |
         ksql http://ksqldb-server:8088
-        RUN SCRIPT '/etc/sql/all.sql';
+        RUN SCRIPT '/etc/sql/source_connectors.sql';
     tty: true
     volumes:
       - ./docker/ksqldb-cli/sql:/etc/sql
