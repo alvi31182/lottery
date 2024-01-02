@@ -18,6 +18,13 @@
     - The Source connector can automatically create topics and write messages to them. 
 - **Note that the ID field in the Outbox table must be incremental and have an integer type** 
     - in the Lottery Service, the PostgreSQL Source connector is configured to retrieve sequential data from the database based on the timestamp field - mode='timestamp'.
+- **Run connectors to create:**
+```bash
+make ksqldb
+```
+```bash
+RUN SCRIPT /etc/sql/source_connectors.sql;
+```
 ![dia-connector.png](public%2FReadmeImg%2Fdia-connector.png)
 ## Overview
 
