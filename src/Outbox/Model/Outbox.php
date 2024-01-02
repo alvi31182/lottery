@@ -32,7 +32,7 @@ class Outbox
         private array $eventData,
         #[ORM\Column(type: 'boolean', nullable: false, options: ['default' => false])]
         private bool $isSend,
-        #[ORM\Column(name: 'createdAt', type: 'datetimetz_immutable', nullable: false)]
+        #[ORM\Column(type: 'timestamp', nullable: false)]
         private DateTimeImmutable $createdAt
     ) {
     }

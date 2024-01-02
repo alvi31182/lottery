@@ -2,6 +2,7 @@
 /docker-compose.php_cli.yml
 /docker-compose.kafka.yml
 /vendor/
+/ksqtest.sql
 /.idea
 
 ###> symfony/framework-bundle ###
