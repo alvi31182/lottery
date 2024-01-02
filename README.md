@@ -12,7 +12,7 @@
 
 ---
 
-- Alternative usage scenario for processing streams in a cafe through Kafka Connector, KsqlDb. 
+- Alternative usage scenario for processing streams in a through Kafka Connector, KsqlDb. 
 - **The PostgreSQL Source connector:**
     - Can fetch an instantaneous snapshot of data directly from the Outbox table and track all subsequent changes at the row level. 
     - The Source connector can automatically create topics and write messages to them. 
