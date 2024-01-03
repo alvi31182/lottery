@@ -15,7 +15,7 @@ services:
       - lottery
       - bridge
 
-  naginx:
+  nginx:
     container_name: lottery_nginx
     build:
       context: .
