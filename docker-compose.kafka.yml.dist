@@ -68,16 +68,11 @@ services:
     depends_on:
       - kafka_lottery
       - ksqldb-server
-    entrypoint: /bin/sh
-    command:
-      - -c
-      - |
-        ksql http://ksqldb-server:8088
-        RUN SCRIPT '/etc/sql/source_connectors.sql';
-    tty: true
+    entrypoint:
+        - /bin/bash
     volumes:
       - ./docker/ksqldb-cli/sql:/etc/sql
-      - ./docker/config:/etc/config/cli.properties
+    tty: true
     networks:
       - lottery
       - bridge
