@@ -43,7 +43,7 @@ class LotteryId
     private function validateUuid(string $uuid): void
     {
         if (!Uuid::isValid($uuid)) {
-            throw new InvalidArgumentException("Invalid UUID format from LotteryId.");
+            throw new InvalidArgumentException("Invalid UUID format from LotteryId." . $uuid);
         }
 
         if (substr($uuid, 14, 1) !== self::UUID_VERSION) {

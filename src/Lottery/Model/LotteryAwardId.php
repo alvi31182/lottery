@@ -40,9 +40,9 @@ class LotteryAwardId
         return $this->id;
     }
 
-    public static function generateUuidV7(): UuidInterface
+    public static function generateUuidV7(): self
     {
-        return Uuid::uuid7();
+        return new self(Uuid::uuid7());
     }
 
     private function validateUuid(string $uuid): void
