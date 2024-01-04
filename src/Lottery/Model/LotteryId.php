@@ -17,6 +17,9 @@ use InvalidArgumentException;
 #[Embeddable]
 class LotteryId
 {
+    /* @var non-empty-string */
+    private const UUID_VERSION = '7';
+
     public function __construct(
         #[ORM\Id]
         #[ORM\Column(type: 'uuid', unique: true, nullable: false)]
@@ -24,9 +27,7 @@ class LotteryId
         #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
         private UuidInterface $id
     ) {
-        if (!Uuid::isValid($this->id->toString())) {
-            throw new InvalidArgumentException('Invalid UUID.');
-        }
+        $this->validateUuid(uuid: $this->id->toString());
     }
 
     public function getId(): UuidInterface
@@ -39,9 +40,14 @@ class LotteryId
         return new self(Uuid::uuid7());
     }
 
-    public function equals(self $other): bool
+    private function validateUuid(string $uuid): void
     {
-        //ToDo to refactor
-        return Uuid::fromString($this->getId()->toString()) == $other;
+        if (!Uuid::isValid($uuid)) {
+            throw new InvalidArgumentException("Invalid UUID format from LotteryId.");
+        }
+
+        if (substr($uuid, 14, 1) !== self::UUID_VERSION) {
+            throw new InvalidArgumentException("Invalid UUID version from LotteryId. Must be version 7.");
+        }
     }
 }
