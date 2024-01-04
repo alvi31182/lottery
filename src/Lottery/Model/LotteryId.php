@@ -11,6 +11,9 @@ use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use InvalidArgumentException;
 
+/**
+ * @psalm-immutable
+ */
 #[Embeddable]
 class LotteryId
 {

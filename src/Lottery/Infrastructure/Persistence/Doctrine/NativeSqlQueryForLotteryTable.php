@@ -40,7 +40,7 @@ SQL;
         )->fetchAllAssociative();
 
         /**
-         * @var array<string> $result
+         * @var array<non-empty-string> $result
          */
         foreach ($results as $result) {
             $lotteryDtoList[] = new LotteryListInWaiting(
@@ -77,7 +77,7 @@ SQL;
             sql: $SQL
         )->fetchAllAssociative();
 
-        /** @var array<string> $result */
+        /** @var array<non-empty-string> $result */
         foreach ($results as $result) {
             $lotteryStartedDtoList[] = new LotteryListInStarted(
                 lotteryId: $result['id'],

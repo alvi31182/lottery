@@ -63,12 +63,12 @@ final readonly class LotteryCreateHandler
     /**
      * @param array{
      *     message: array{
-     *      eventType: string
+     *      eventType: non-empty-string
      *    },
      *     game: array{
-     *      playerId: string,
-     *      gameId: string,
-     *      stake: string
+     *      playerId: non-empty-string,
+     *      gameId: non-empty-string,
+     *      stake: non-empty-string
      * }} $messageData
      */
     private function createLotteryAsync(Deferred $deferred, array $messageData): PromiseInterface

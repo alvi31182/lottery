@@ -10,6 +10,9 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
+/**
+ * @psalm-immutable
+ */
 #[Embeddable]
 class LotteryAwardId
 {

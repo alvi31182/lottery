@@ -8,6 +8,9 @@ use DateTimeImmutable;
 use DateTimeZone;
 use Exception;
 
+/**
+ * @psalm-immutable
+ */
 final class AwardCreated implements DomainEvent
 {
     /**

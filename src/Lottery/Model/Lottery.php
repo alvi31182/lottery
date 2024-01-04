@@ -59,39 +59,4 @@ class Lottery
     {
         return $this->id;
     }
-
-    public function getPlayerId(): UuidInterface
-    {
-        return $this->playerId;
-    }
-
-    public function getGameId(): UuidInterface
-    {
-        return $this->gameId;
-    }
-
-    public function getStatus(): LotteryStatus
-    {
-        return $this->status;
-    }
-
-    public function getStake(): string
-    {
-        return $this->stake;
-    }
-
-    public function getCreatedAt(): DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function getUpdatedAt(): ?DateTimeImmutable
-    {
-        return $this->updatedAt;
-    }
-
-    public function getDeletedAt(): ?DateTimeImmutable
-    {
-        return $this->deletedAt;
-    }
 }
