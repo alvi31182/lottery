@@ -59,4 +59,24 @@ class Lottery
     {
         return $this->id;
     }
+
+    public function getPlayerId(): UuidInterface
+    {
+        return $this->playerId;
+    }
+
+    public function getStake(): string
+    {
+        return $this->stake;
+    }
+
+    public function getGameId(): UuidInterface
+    {
+        return $this->gameId;
+    }
+
+    public function getStatus(): LotteryStatus
+    {
+        return $this->status;
+    }
 }
