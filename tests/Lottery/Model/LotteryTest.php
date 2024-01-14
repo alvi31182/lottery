@@ -27,7 +27,7 @@ class LotteryTest extends TestCase
 
 
         $this->assertInstanceOf(LotteryId::class, $lottery->getId());
-        
+
         $this->assertSame(LotteryStatus::IN_WAITING, $lottery->getStatus());
     }
 }

@@ -2,7 +2,8 @@
 
 cd /var/www/lottery
 
-./vendor/bin/phpunit
+docker exec -it payment_php bash && ./vendor/bin/phpunit
+
 
 if [ $? -ne 0 ]; then
     echo "Запуск тестов не пройден. Коммит отклонен."
